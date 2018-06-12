@@ -4,6 +4,4 @@ module Controller(input[31:0] address, output wire reg2Loc,
     output wire aluSRC, output wire regWrite, output reg [4:0] readRegister1,
     output reg [4:0] readRegister2, output reg [4:0] writeRegister) ;
     
-    //Those only did the straight control
-
 endmodule 
