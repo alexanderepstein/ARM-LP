@@ -4,7 +4,8 @@ module top;
 	reg [31:0]input1;
 	reg [31:0]input2;
 	reg [3:0]opcode;
-	ALU ALU_instance(input1, input2, opcode, result);
+    reg clock;
+	ALU ALU_instance(input1, input2, opcode, result, clock);
 
 	initial begin
 		$monitor("input1: ", input1, "\t input2: ",input2,"\t opcode: ",opcode,
@@ -26,13 +27,17 @@ module top;
 		#2 opcode = 12;                         //Test the NAND
 		#2 opcode = 13;                         //Test the MOV
 	end
+    always
+        #1 clock = ~clock;
+        
 
 endmodule
 
 module ALU (input[31:0] inOne,input[31:0] inTwo, input[3:0]opcode,
- output reg [31:0]result, output wire zeroFlag);
+ output reg [31:0]result, output reg zeroFlag, reg clock);
 
-	always @* begin4
+	always @(posedge clock)
+    begin
 		case(opcode)
 			4'b0010: result = inOne + inTwo;    //LD_STR_ADD opcode
 			4'b0111: result = inOne == 0;                //CBZ opcode
@@ -45,7 +50,13 @@ module ALU (input[31:0] inOne,input[31:0] inTwo, input[3:0]opcode,
 			4'b1101: result = inOne;            //MOV opcode
 			default: result = 0;                //undefined opcode
 		endcase
-        zeroFlag = inOne == 0;
+        if (inOne == 0)
+        begin
+            zeroFlag = 1;
+        end
+        else begin
+            zeroFlag = 0;
+        end
 	end
 
 endmodule 
