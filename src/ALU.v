@@ -29,18 +29,14 @@ module top;
 	end
     always
         #1 clock = ~clock;
-        
-
 endmodule
 
-module ALU (input[31:0] inOne,input[31:0] inTwo, input[3:0]opcode,
- output reg [31:0]result, output reg zeroFlag, reg clock);
+module ALU (input[31:0] inOne,input[31:0] inTwo, input[3:0]opcode, output reg [31:0]result, output reg zeroFlag, input reg clock);
 
-	always @(posedge clock)
-    begin
+	always @(posedge clock) begin
 		case(opcode)
 			4'b0010: result = inOne + inTwo;    //LD_STR_ADD opcode
-			4'b0111: result = inOne == 0;                //CBZ opcode
+			4'b0111: result = inOne == 0;       //CBZ opcode
 			4'b1010: result = inOne - inTwo;    //SUB opcode
 			4'b0110: result = inOne & inTwo;    //bitwise AND opcode
 			4'b0100: result = inOne | inTwo;    //bitwise OR opcode
@@ -50,13 +46,11 @@ module ALU (input[31:0] inOne,input[31:0] inTwo, input[3:0]opcode,
 			4'b1101: result = inOne;            //MOV opcode
 			default: result = 0;                //undefined opcode
 		endcase
-        if (inOne == 0)
-        begin
-            zeroFlag = 1;
-        end
-        else begin
-            zeroFlag = 0;
-        end
+                if (inOne == 0) begin
+            		zeroFlag = 1;
+        	end
+        	else begin
+            		zeroFlag = 0;
+        	end
 	end
-
 endmodule 
