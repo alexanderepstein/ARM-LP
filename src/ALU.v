@@ -14,6 +14,7 @@ module top;
     wire [31:0] readData; //doubles as write data for operand prep
     
     wire [31:0] instruction;
+    wire [10:0] opcodeInstruction;
     wire unconditionalBranchFlag;
     wire branchFlag;
     wire aluOP;
@@ -33,15 +34,15 @@ module top;
 	ALU aluInstance(input1, input2, opcode, result, zeroFlag, clock);
     DataCache dataCacheInstance(memWriteFlag, memReadFlag, memToRegFlag, result,
         readData2, readData, clock);
-    Controller controllerInstance(instruction, unconditionalBranchFlag,
+    Controller controllerInstance(opcodeInstruction, unconditionalBranchFlag,
         branchFlag, memReadFlag, memToRegFlag, aluOP, memWriteFlag, aluSRC, regWrite,
-        readRegister1, readRegister2, writeRegister);
-    InstructionCache instructionCacheInstance(readAddress, instruction);
+        readRegister1, readRegister2, writeRegister, clock);
+    InstructionCache instructionCacheInstance(readAddress, instruction, clock);
     OperationPrep operationPrepInstance(regWrite, readRegister1, readRegister2,
         writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
-        pcOffsetFilled);
+        pcOffsetFilled, clock);
     PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, pcOffsetOrig,
-        readAddress, pcScaledOffset);
+        readAddress, pcScaledOffset, clock);
 
         
 
