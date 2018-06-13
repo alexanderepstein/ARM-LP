@@ -7,31 +7,43 @@ module top;
     reg clock;
     wire zeroFlag;
     
-    reg memWrite;
-    reg memRead;
-    reg memToReg;
-    reg[31:0] address;
-    reg[3:0] writeData;
-    wire[31:0] readData;
+    wire memWriteFlag;
+    wire memReadFlag;
+    wire memToRegFlag;
+    wire [31:0] readAddress;
+    wire [31:0] readData; //doubles as write data for operand prep
     
-    reg [31:0] instruction;
-    reg unconditionalBranch;
-    reg branch;
-    reg aluOP;
-    reg aluSRC;
-    reg regWrite;
-    reg [4:0] readRegister1;
-    reg [4:0] readRegister2;
-    reg [4:0] writeRegister;
+    wire [31:0] instruction;
+    wire unconditionalBranchFlag;
+    wire branchFlag;
+    wire aluOP;
+    wire aluSRC;
+    wire regWrite;
+    wire [4:0] readRegister1;
+    wire [4:0] readRegister2;
+    wire [4:0] writeRegister;
+    
+    wire [31:0] readData1;
+    wire [31:0] readData2;
+    wire [31:0] pcOffsetOrig;
+    wire [31:0] pcOffsetFilled;
+    wire [31:0] pcScaledOffset;
     
     
-    
-	ALU ALU_instance(input1, input2, opcode, result, zeroFlag, clock);
-    DataCache dataCacheInstance(memWrite, memRead, memToReg, address,
-        writeData, readData, clock);
-    Controller controllerInstance(instruction, unconditionalBranch,
-    branch, memRead, memToReg, aluOP, memWrite, aluSRC, regWrite, readRegister1,
-    readRegister2, writeRegister) ;
+	ALU aluInstance(input1, input2, opcode, result, zeroFlag, clock);
+    DataCache dataCacheInstance(memWriteFlag, memReadFlag, memToRegFlag, result,
+        readData2, readData, clock);
+    Controller controllerInstance(instruction, unconditionalBranchFlag,
+        branchFlag, memReadFlag, memToRegFlag, aluOP, memWriteFlag, aluSRC, regWrite,
+        readRegister1, readRegister2, writeRegister);
+    InstructionCache instructionCacheInstance(readAddress, instruction);
+    OperationPrep operationPrepInstance(regWrite, readRegister1, readRegister2,
+        writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
+        pcOffsetFilled);
+    PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, pcOffsetOrig,
+        readAddress, pcScaledOffset);
+
+        
 
 	initial begin
 		$monitor("input1: ", input1, "\t input2: ",input2,"\t opcode: ",opcode,
