@@ -5,7 +5,33 @@ module top;
 	reg [31:0]input2;
 	reg [3:0]opcode;
     reg clock;
-	ALU ALU_instance(input1, input2, opcode, result, clock);
+    wire zeroFlag;
+    
+    reg memWrite;
+    reg memRead;
+    reg memToReg;
+    reg[31:0] address;
+    reg[3:0] writeData;
+    wire[31:0] readData;
+    
+    reg [31:0] instruction;
+    reg unconditionalBranch;
+    reg branch;
+    reg aluOP;
+    reg aluSRC;
+    reg regWrite;
+    reg [4:0] readRegister1;
+    reg [4:0] readRegister2;
+    reg [4:0] writeRegister;
+    
+    
+    
+	ALU ALU_instance(input1, input2, opcode, result, zeroFlag, clock);
+    DataCache dataCacheInstance(memWrite, memRead, memToReg, address,
+        writeData, readData, clock);
+    Controller controllerInstance(instruction, unconditionalBranch,
+    branch, memRead, memToReg, aluOP, memWrite, aluSRC, regWrite, readRegister1,
+    readRegister2, writeRegister) ;
 
 	initial begin
 		$monitor("input1: ", input1, "\t input2: ",input2,"\t opcode: ",opcode,
@@ -34,7 +60,7 @@ module top;
 endmodule
 
 module ALU (input[31:0] inOne,input[31:0] inTwo, input[3:0]opcode,
- output reg [31:0]result, output reg zeroFlag, reg clock);
+ output reg [31:0]result, output reg zeroFlag, input clock);
 
 	always @(posedge clock)
     begin
