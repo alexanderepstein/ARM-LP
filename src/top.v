@@ -1,84 +1,72 @@
 module top;
 
-    reg clock; // Main clock
+  wire [31:0]result;              //ALU result. output from ALU to data cache.
+  reg [3:0]aluControlCode;        //ALU control code
+    reg clock;                      //clock for entire processor
+    wire zeroFlag;                  //zero flag from ALU for use in PC
 
-    // ALU integration
- 	  reg [31:0] input1; // Also connects to operand prep as Read Data 1 (input)
-    reg [31:0] input2; // Also connects to operand prep as Read Data 2 (input)
-	  reg [3:0] opcode; // Also connects to controller as aluOP
-    wire [31:0] result;
+    wire memWriteFlag;              //flag from Decoder & Control for use in Data Cache
+    wire memReadFlag;               //flag from Decoder & Control for use in Data Cache
+    wire memToRegFlag;              //flag from Decoder & Control for use in Data Cache
+    wire [31:0] readAddress;        //output from PC for use in instruction cache
 
-    // Controller
-    wire memWriteFlag;
-    wire memReadFlag;
-    wire memToRegFlag;
-    wire zeroFlag;
-    wire unconditionalBranchFlag;
-    wire branchFlag;
-    wire aluOP;
-    wire aluSRC;
-    wire regWrite;
+    wire [31:0] readData;           //doubles as write data for operand prep input
+                                    //read data output from data cache
 
-    // Data Cache Integration
-    wire [31:0] readData; // Connects to operand prep as Write Data
+    wire [31:0] instruction;        //instruction value output from instruction cache
+    wire [10:0] opcodeInstruction;  //DO WE WANT OPERAND PREP TO ONLY GET 10bits??? WHO SENDS??
+    wire unconditionalBranchFlag;   //flag from Decoder & Control for use in PC
+    wire branchFlag;                //flag from Decoder & Control for use in PC
+    wire aluOP;                     //flag from Decoder & Control for use in ALU. May be wider than 1 bit?
+    wire aluSRC;                    //flag from Decoder & Control for use in ALU
+    wire regWriteFlag;              //flag from Decoder & Control for use in PC
+    wire [4:0] readRegister1;       //register 1 ID from Decoder & Control to Operand Prep
+    wire [4:0] readRegister2;       //register 2 ID from Decoder & Control to Operand Prep
+    wire [4:0] writeRegister;       //write register ID from Decoder & Control to Operand Prep
 
-    // Instruction Cache Integration
-    wire [31:0] instruction;
-    wire [31:0] readAddress;
-    wire [10:0] opcodeInstruction;
-
-    // Operand Prep integration
-    wire [4:0] readRegister1;
-    wire [4:0] readRegister2;
-    wire [31:0] readData1;
-    wire [31:0] readData2;
-    wire [4:0] writeRegister;
-
-    // PC integration
-    wire [31:0] pcOffsetOrig;
-    wire [31:0] pcOffsetFilled;
-    wire [31:0] pcScaledOffset;
+    wire [31:0] readData1;  //input to ALU from operand preperation
+    wire [31:0] readData2;  //input to ALU from operand preperation
+    wire [31:0] pcOffsetOrig;       //original PC counter. Used in PC and operand preperation. SHOULD THIS BE AN INOUT??Needs to get changed.
+    wire [31:0] pcOffsetFilled;     //Sign extended PC offset. NOT SURE HOW THIS IS BEING LINKED
+    wire [31:0] pcScaledOffset;     //I DO NOT THINK THAT THIS VARIABLE SHOULD EXIST. SHOULD BE A LOCAL WITHIN PC NOT OUTPUT BACK.
 
 
-	ALU aluInstance(input1, input2, opcode, result, zeroFlag, clock);
+  ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag, clock);
     DataCache dataCacheInstance(memWriteFlag, memReadFlag, memToRegFlag, result,
         readData2, readData, clock);
     Controller controllerInstance(opcodeInstruction, unconditionalBranchFlag,
-        branchFlag, memReadFlag, memToRegFlag, aluOP, memWriteFlag, aluSRC, regWrite,
-        readRegister1, readRegister2, writeRegister, clock);
+        branchFlag, memReadFlag, memToRegFlag, aluOP, memWriteFlag, aluSRC,
+        regWriteFlag, readRegister1, readRegister2, writeRegister, clock);
     InstructionCache instructionCacheInstance(readAddress, instruction, clock);
-    OperationPrep operationPrepInstance(regWrite, readRegister1, readRegister2,
+    OperationPrep operationPrepInstance(regWriteFlag, readRegister1, readRegister2,
         writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
-        clock);
+        pcOffsetFilled, clock);
     PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, pcOffsetOrig,
-        readAddress, pcOffsetFilled, clock);
+        readAddress, pcScaledOffset, clock);
 
 
 
-	initial begin
-		$monitor("input1: ", input1, "\t input2: ", input2,"\t opcode: ", opcode,
-        "\t result: ", result, "\t zeroFlag: ", zeroFlag);
-	end
+  initial begin
+    $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
+        "\t result: ",result);
+  end
 
-always
-   #1 clock = ~clock;
 
-    //This is the test function all of the #number represents a timing delay
-	initial begin
-		input1 = 15; input2 = 15; opcode = 2;   //Test the add
-    #2 input1 = 0;                          //Change input1 to 0
-		#2 opcode = 7;                          //Test the CBZ
-    #2 input1 = 3;
-		#2 input1 = 10;                         //change input1 to 10
-		#2 opcode = 3;                          //Test the subtraction
-		#2 input1 = 5;                          //change input1 to 5
-		#2 opcode = 6;                          //Test the bitwise AND
-		#2 opcode = 4;                          //Test the bitwise OR
-		#2 input2 = 10;                         //change input2 to 10
-		#2 opcode = 9;                          //Test the bitwise XOR
-		#2 opcode = 5;                          //Test the NOR
-		#2 opcode = 12;                         //Test the NAND
-		#2 opcode = 13;                         //Test the MOV
-	end
-
+  //This is the test function all of the #number represents a timing delay
+initial begin
+  readData1 = 15; readData2 = 15; aluControlCode = 2;   //Test the add
+  #2 aluControlCode = 7;                          //Test the CBZ
+  #2 readData1 = 10;                         //change readData1 to 10
+  #2 aluControlCode = 3;                          //Test the subtraction
+  #2 readData1 = 5;                          //change readData1 to 5
+  #2 aluControlCode = 6;                          //Test the bitwise AND
+  #2 aluControlCode = 4;                          //Test the bitwise OR
+  #2 readData2 = 10;                         //change readData2 to 10
+  #2 aluControlCode = 9;                          //Test the bitwise XOR
+  #2 aluControlCode = 5;                          //Test the NOR
+  #2 aluControlCode = 12;                         //Test the NAND
+  #2 aluControlCode = 13;                         //Test the MOV
+end
+  always
+      #1 clock = ~clock;
 endmodule
