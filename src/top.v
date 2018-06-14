@@ -1,7 +1,7 @@
 module top;
 
-    wire [31:0] result;              //ALU result. output from ALU to data cache.
-    wire [3:0] aluControlCode;        //ALU control code
+    wire [31:0] result;             //ALU result. output from ALU to data cache.
+    wire [3:0] aluControlCode;      //ALU control code
     reg clock;                      //clock for entire processor
     wire zeroFlag;                  //zero flag from ALU for use in PC
     wire carryBit;                  //carrybit flag
@@ -9,7 +9,7 @@ module top;
     wire memWriteFlag;              //flag from Decoder & Control for use in Data Cache
     wire memReadFlag;               //flag from Decoder & Control for use in Data Cache
     wire memToRegFlag;              //flag from Decoder & Control for use in Data Cache
-    wire [31:0] PC;        //output from PC for use in instruction cache
+    wire [31:0] PC;                 //output from PC for use in instruction cache
 
     wire [31:0] readData;           //doubles as write data for operand prep input
                                     //read data output from data cache
@@ -23,10 +23,10 @@ module top;
     wire [4:0] readRegister2;       //register 2 ID from Decoder & Control to Operand Prep
     wire [4:0] writeRegister;       //write register ID from Decoder & Control to Operand Prep
 
-    wire [31:0] readData1;  //input to ALU from operand preperation
-    wire [31:0] readData2;  //input to ALU from operand preperation
-    wire [31:0] pcOffsetOrig;       //original PC counter. Used in PC and operand preperation. SHOULD THIS BE AN INOUT??Needs to get changed.
-    wire [31:0] pcOffsetFilled;     //Sign extended PC offset. NOT SURE HOW THIS IS BEING LINKED
+    wire [31:0] readData1;          //input to ALU from operand preperation
+    wire [31:0] readData2;          //input to ALU from operand preperation
+    wire [31:0] pcOffsetOrig;       //original PC counter. 
+    wire [31:0] pcOffsetFilled;     //Sign extended PC offset.
 
     ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag,
         clock, carryBit);
