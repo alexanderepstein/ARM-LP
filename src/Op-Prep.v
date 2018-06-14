@@ -1,12 +1,23 @@
-module OperationPrep(input wire regWrite, input reg [4:0] reg1,
-  input reg [4:0] reg2, input[4:0] writeRegister, input[31:0] writeData,
-  output reg [31:0] readData1, output reg[31:0] readData2, input wire aluSRC,
-  input reg [31:0] pcOffsetOrig, output reg [31:0] pcOffsetFilled,
-  input reg clock
+module OperationPrep(regWrite, reg1, reg2,  writeRegister,
+   writeData,  output1,  output2, aluSRC, pcOffsetOrig, clock
 );
 
-	always @(posedge clock) begin
+input clock; // Main clock
+input regWrite; // write writeData to writeRegister
+input aluSRC; // Mux selector bit for input2 to ALU
 
+input [4:0] reg1; // First register address
+input [4:0] reg2; // Second register address
+input [4:0] writeRegister; // Register address to write to
+input [31:0] writeData; // Data to write to writeRegister
+input [31:0] pcOffsetOrig; // Original PC offset
+
+output reg [31:0] output1; // Data from reg1
+output reg [31:0] output2; // Data from reg2 or instruction
+
+	always @(posedge clock) begin
+    //  output1 = grabData from reg1;
+    // output2 = ~aluSRC ? data from reg2 : pcOffsetOrig;
     end
 
-endmodule 
+endmodule
