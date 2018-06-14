@@ -8,20 +8,17 @@ module ALU (inOne, inTwo, opcode,result, zeroFlag, clock, carryBit);
 
  output reg [31:0] result;      //result of ALU operation
  output wire zeroFlag;
- output wire carryBit;
+ output reg carryBit;
  reg [32:0] maxNum = 2147483647;
  reg [32:0] minNum = -2147483648;
  assign zeroFlag = inTwo == 0 ? 1 : 0; // Flag is set if inTwo is a 0
- assign carryBit = (((inOne + inTwo) > maxNum) || ((inOne + inTwo) < minNum)
-                    || ((inOne - inTwo) < maxNum) || ((inOne - inTwo) > maxNum))
-                    ? 1 : 0;
-
 
  always @(posedge clock) begin
+        carryBit = 0;
 		case(opcode)
-			4'b0010: result = inOne + inTwo;    //LD_STR_ADD opcode                
-			4'b0111: result = inOne == 0;       //CBZ opcode
-			4'b1010: result = inOne - inTwo;    //SUB opcode
+			4'b0010: {carryBit,result} = inOne + inTwo;    //LD_STR_ADD opcode                
+			4'b0111: result = inTwo == 0;       //CBZ opcode
+			4'b1010: {carryBit,result} = inOne - inTwo;    //SUB opcode
 			4'b0110: result = inOne & inTwo;    //bitwise AND opcode
 			4'b0100: result = inOne | inTwo;    //bitwise OR opcode
 			4'b1001: result = inOne ^ inTwo;    //bitwise XOR opcode

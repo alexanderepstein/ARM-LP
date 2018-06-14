@@ -63,7 +63,7 @@ module top;
         readData1VAL = 15; readData2VAL = 15; aluControlCodeVAL = 2;  //Test the add
         #2 aluControlCodeVAL = 7;                                     //Test the CBZ
         #2 readData1VAL = 10;                                         //change readData1VAL to 10
-        #2 aluControlCodeVAL = 3;                                     //Test the subtraction
+        #2 aluControlCodeVAL = 10;                                     //Test the subtraction
         #2 readData1VAL = 5;                                          //change readData1VAL to 5
         #2 aluControlCodeVAL = 6;                                     //Test the bitwise AND
         #2 aluControlCodeVAL = 4;                                     //Test the bitwise OR
