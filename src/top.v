@@ -49,9 +49,9 @@ module top;
     InstructionCache instructionCacheInstance(readAddress, instruction, clock);
     OperationPrep operationPrepInstance(regWrite, readRegister1, readRegister2,
         writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
-        pcOffsetFilled, clock);
+        clock);
     PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, pcOffsetOrig,
-        readAddress, pcScaledOffset, clock);
+        readAddress, pcOffsetFilled, clock);
 
 
 
