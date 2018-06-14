@@ -1,7 +1,7 @@
 module top;
 
-  wire [31:0]result;              //ALU result. output from ALU to data cache.
-  reg [3:0]aluControlCode;        //ALU control code
+    wire [31:0] result;              //ALU result. output from ALU to data cache.
+    reg [3:0] aluControlCode;        //ALU control code
     reg clock;                      //clock for entire processor
     wire zeroFlag;                  //zero flag from ALU for use in PC
 
@@ -18,7 +18,7 @@ module top;
     wire unconditionalBranchFlag;   //flag from Decoder & Control for use in PC
     wire branchFlag;                //flag from Decoder & Control for use in PC
     wire aluOP;                     //flag from Decoder & Control for use in ALU. May be wider than 1 bit?
-    wire aluSRC;                    //flag from Decoder & Control for use in ALU
+    wire aluSRC;                    //flag from Decoder & Control for u1se in ALU
     wire regWriteFlag;              //flag from Decoder & Control for use in PC
     wire [4:0] readRegister1;       //register 1 ID from Decoder & Control to Operand Prep
     wire [4:0] readRegister2;       //register 2 ID from Decoder & Control to Operand Prep
@@ -50,18 +50,21 @@ module top;
     $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
         "\t result: ",result);
   end
-
+reg [31:0] test1;
+reg [31:0] test2;
+assign readData1 = test1;
+assign readData2 = test2;
 
   //This is the test function all of the #number represents a timing delay
 initial begin
-  readData1 = 15; readData2 = 15; aluControlCode = 2;   //Test the add
+  test1 = 15; test2 = 15; aluControlCode = 2;   //Test the add
   #2 aluControlCode = 7;                          //Test the CBZ
-  #2 readData1 = 10;                         //change readData1 to 10
+  #2 test1 = 10;                         //change test1 to 10
   #2 aluControlCode = 3;                          //Test the subtraction
-  #2 readData1 = 5;                          //change readData1 to 5
+  #2 test1 = 5;                          //change test1 to 5
   #2 aluControlCode = 6;                          //Test the bitwise AND
   #2 aluControlCode = 4;                          //Test the bitwise OR
-  #2 readData2 = 10;                         //change readData2 to 10
+  #2 test2 = 10;                         //change readData2 to 10
   #2 aluControlCode = 9;                          //Test the bitwise XOR
   #2 aluControlCode = 5;                          //Test the NOR
   #2 aluControlCode = 12;                         //Test the NAND

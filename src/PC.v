@@ -9,8 +9,8 @@ input [31:0] PCOffsetOrig;
 output reg[31:0] readAddress;
 output reg[31:0] PCScaledOffset;
 
-wire muxSelect = (zeroFlag & branchFlag) | unconditionalBranchFlag; // The mux for what the PC should be set to (branch or next instruction)
-
+wire muxSelect;
+assign muxSelect = (zeroFlag & branchFlag) | unconditionalBranchFlag; // The mux for what the PC should be set to (branch or next instruction)
 
 	always @(posedge clock) begin
 		PCScaledOffset = PCOffsetOrig << 2; // Multiplying the offset by 4

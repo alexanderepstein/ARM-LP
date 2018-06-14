@@ -13,8 +13,8 @@ input [31:0] writeData; // Data to write to writeRegister
 input [31:0] pcOffsetOrig; // Original PC offset
 
 
-output reg [31:0] readData1; // Data from reg1
-output reg [31:0] readData2; // Data from reg2 or instruction
+output wire [31:0] readData1; // Data from reg1
+output wire [31:0] readData2; // Data from reg2 or instruction
 output reg [31:0] pcOffsetFilled; // PC padded with 0s to be 32 bits;
 
 

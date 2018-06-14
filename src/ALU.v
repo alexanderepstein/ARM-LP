@@ -1,6 +1,6 @@
 module ALU (inOne, inTwo, opcode,result, zeroFlag, clock);
 
-    wire memReadFlag;               //flag from Decoder & Control for use in Data Cache
+ wire memReadFlag;               //flag from Decoder & Control for use in Data Cache
  input clock;
  input [31:0] inOne;
  input [31:0] inTwo;
