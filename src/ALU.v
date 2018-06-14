@@ -7,9 +7,11 @@ module ALU (inOne, inTwo, opcode,result, zeroFlag, clock);
  input [3:0] opcode;
 
  output reg [31:0] result;
- output reg zeroFlag;
+ output wire zeroFlag;
 
- always @(*) begin
+ assign zeroFlag = inTwo == 0 ? 1 : 0; // Flag is set if inTwo is a 0
+
+ always @(posedge clock) begin
 		case(opcode)
 			4'b0010: result = inOne + inTwo;    //LD_STR_ADD opcode
 			4'b0111: result = inOne == 0;       //CBZ opcode
@@ -22,6 +24,5 @@ module ALU (inOne, inTwo, opcode,result, zeroFlag, clock);
 			4'b1101: result = inOne;            //MOV opcode
 			default: result = 0;                //undefined opcode
 		endcase
-    zeroFlag = inOne == 0 ? 1 : 0;
 	end
 endmodule
