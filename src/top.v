@@ -31,7 +31,7 @@ module top;
     wire [31:0] pcScaledOffset;     //I DO NOT THINK THAT THIS VARIABLE SHOULD EXIST. SHOULD BE A LOCAL WITHIN PC NOT OUTPUT BACK.
 
 
-  ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag, clock);
+    ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag, clock);
     DataCache dataCacheInstance(memWriteFlag, memReadFlag, memToRegFlag, result,
         readData2, readData, clock);
     Controller controllerInstance(opcodeInstruction, unconditionalBranchFlag,
@@ -46,17 +46,20 @@ module top;
 
 
 
-  initial begin
-    $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
-        "\t result: ",result);
-  end
-reg [31:0] test1;
-reg [31:0] test2;
-assign readData1 = test1;
-assign readData2 = test2;
+    initial begin
+        $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
+        "\t result: ",result, "\t zeroFlag ", zeroFlag);
+    end
+    
+    //This is a workaround to couple both inputs AND outputs from modules to a register.
+    reg [31:0] test1;
+    reg [31:0] test2;
+    assign readData1 = test1;
+    assign readData2 = test2;
 
   //This is the test function all of the #number represents a timing delay
 initial begin
+  clock = 0;
   test1 = 15; test2 = 15; aluControlCode = 2;   //Test the add
   #2 aluControlCode = 7;                          //Test the CBZ
   #2 test1 = 10;                         //change test1 to 10
