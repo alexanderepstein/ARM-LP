@@ -46,7 +46,7 @@ module top;
 
     initial begin
         $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
-        "\t result: ",result, "\t zeroFlag ", zeroFlag);
+        "\t result: ",result, "\t zeroFlag ", zeroFlag, "\t carryBit ", carryBit);
     end
 
     //This is a workaround to couple both inputs AND outputs from modules to a register.
@@ -64,6 +64,11 @@ module top;
         #2 aluControlCodeVAL = 7;                                     //Test the CBZ
         #2 readData1VAL = 10;                                         //change readData1VAL to 10
         #2 aluControlCodeVAL = 10;                                     //Test the subtraction
+        //Test a large addition
+        #2 readData1VAL = 2140483647;
+        #2 readData2VAL = 2141483647;
+        #2 aluControlCodeVAL = 2;
+        
         #2 readData1VAL = 5;                                          //change readData1VAL to 5
         #2 aluControlCodeVAL = 6;                                     //Test the bitwise AND
         #2 aluControlCodeVAL = 4;                                     //Test the bitwise OR
