@@ -9,7 +9,7 @@ module top;
     wire memWriteFlag;              //flag from Decoder & Control for use in Data Cache
     wire memReadFlag;               //flag from Decoder & Control for use in Data Cache
     wire memToRegFlag;              //flag from Decoder & Control for use in Data Cache
-    wire [31:0] readAddress;        //output from PC for use in instruction cache
+    wire [31:0] PC;        //output from PC for use in instruction cache
 
     wire [31:0] readData;           //doubles as write data for operand prep input
                                     //read data output from data cache
@@ -27,8 +27,6 @@ module top;
     wire [31:0] readData2;  //input to ALU from operand preperation
     wire [31:0] pcOffsetOrig;       //original PC counter. Used in PC and operand preperation. SHOULD THIS BE AN INOUT??Needs to get changed.
     wire [31:0] pcOffsetFilled;     //Sign extended PC offset. NOT SURE HOW THIS IS BEING LINKED
-    wire [31:0] pcScaledOffset;     //I DO NOT THINK THAT THIS VARIABLE SHOULD EXIST. SHOULD BE A LOCAL WITHIN PC NOT OUTPUT BACK.
-
 
     ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag,
         clock, carryBit);
@@ -37,12 +35,12 @@ module top;
     Controller controllerInstance(instruction, unconditionalBranchFlag,
         branchFlag, memReadFlag, memToRegFlag, aluControlCode, memWriteFlag, aluSRC,
         regWriteFlag, readRegister1, readRegister2, writeRegister, clock);
-    InstructionCache instructionCacheInstance(readAddress, instruction, clock);
+    InstructionCache instructionCacheInstance(PC, instruction, clock);
     OperationPrep operationPrepInstance(regWriteFlag, readRegister1, readRegister2,
         writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
         pcOffsetFilled, clock);
-    PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, pcOffsetOrig,
-        readAddress, pcScaledOffset, clock);
+    PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, PC,
+        pcOffsetFilled, clock);
 
 
 
@@ -50,7 +48,7 @@ module top;
         $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
         "\t result: ",result, "\t zeroFlag ", zeroFlag);
     end
-    
+
     //This is a workaround to couple both inputs AND outputs from modules to a register.
     reg [31:0] readData1VAL;
     reg [31:0] readData2VAL;

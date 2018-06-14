@@ -1,7 +1,7 @@
-module InstructionCache(address, instruction, clock);
+module InstructionCache(PC, instruction, clock);
 
 input clock; // Main clock
-input [31:0] address; // Address to read for instruction
+input [31:0] PC; // Address to read for instruction
 
 output reg[31:0] instruction; // Current instruction being read
 
