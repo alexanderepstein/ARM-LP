@@ -5,7 +5,7 @@ module PC(input wire branchFlag, input wire unconditionalBranchFlag,
 	reg muxSelect;
 
 	always @(posedge clock) begin
-		PCScaledOffset = PCOffsetOrig << 2; // Multiplying the offset by 4 
+		PCScaledOffset = PCOffsetOrig << 2; // Multiplying the offset by 4...PC should take the filled offset NOT the original offset
 		muxSelect = (zeroFlag & branchFlag) | unconditionalBranchFlag; // The mux for what the PC should be set to (branch or next instruction) 
 		readAddress = (muxSelect == 0) ? readAddress + 4 : readAddress + PCScaledOffset;  // If mux == 0 next instruction otherwise branch
 	end
