@@ -1,7 +1,7 @@
 module top;
 
     wire [31:0] result;              //ALU result. output from ALU to data cache.
-    reg [3:0] aluControlCode;        //ALU control code
+    wire [3:0] aluControlCode;        //ALU control code
     reg clock;                      //clock for entire processor
     wire zeroFlag;                  //zero flag from ALU for use in PC
     wire carryBit;                  //carrybit flag
@@ -15,10 +15,8 @@ module top;
                                     //read data output from data cache
 
     wire [31:0] instruction;        //instruction value output from instruction cache
-    wire [10:0] opcodeInstruction;  //DO WE WANT OPERAND PREP TO ONLY GET 10bits??? WHO SENDS??
     wire unconditionalBranchFlag;   //flag from Decoder & Control for use in PC
     wire branchFlag;                //flag from Decoder & Control for use in PC
-    wire aluOP;                     //flag from Decoder & Control for use in ALU. May be wider than 1 bit?
     wire aluSRC;                    //flag from Decoder & Control for u1se in ALU
     wire regWriteFlag;              //flag from Decoder & Control for use in PC
     wire [4:0] readRegister1;       //register 1 ID from Decoder & Control to Operand Prep
@@ -36,8 +34,8 @@ module top;
         clock, carryBit);
     DataCache dataCacheInstance(memWriteFlag, memReadFlag, memToRegFlag, result,
         readData2, readData, clock);
-    Controller controllerInstance(opcodeInstruction, unconditionalBranchFlag,
-        branchFlag, memReadFlag, memToRegFlag, aluOP, memWriteFlag, aluSRC,
+    Controller controllerInstance(instruction, unconditionalBranchFlag,
+        branchFlag, memReadFlag, memToRegFlag, aluControlCode, memWriteFlag, aluSRC,
         regWriteFlag, readRegister1, readRegister2, writeRegister, clock);
     InstructionCache instructionCacheInstance(readAddress, instruction, clock);
     OperationPrep operationPrepInstance(regWriteFlag, readRegister1, readRegister2,
@@ -54,26 +52,28 @@ module top;
     end
     
     //This is a workaround to couple both inputs AND outputs from modules to a register.
-    reg [31:0] test1;
-    reg [31:0] test2;
-    assign readData1 = test1;
-    assign readData2 = test2;
+    reg [31:0] readData1VAL;
+    reg [31:0] readData2VAL;
+    reg [31:0] aluControlCodeVAL;
+    assign readData1 = readData1VAL;
+    assign readData2 = readData2VAL;
+    assign aluControlCode = aluControlCodeVAL;
 
     //This is the test function all of the #number represents a timing delay
     initial begin
         clock = 0;
-        test1 = 15; test2 = 15; aluControlCode = 2;     //Test the add
-        #2 aluControlCode = 7;                          //Test the CBZ
-        #2 test1 = 10;                                  //change test1 to 10
-        #2 aluControlCode = 3;                          //Test the subtraction
-        #2 test1 = 5;                                   //change test1 to 5
-        #2 aluControlCode = 6;                          //Test the bitwise AND
-        #2 aluControlCode = 4;                          //Test the bitwise OR
-        #2 test2 = 10;                                  //change readData2 to 10
-        #2 aluControlCode = 9;                          //Test the bitwise XOR
-        #2 aluControlCode = 5;                          //Test the NOR
-        #2 aluControlCode = 12;                         //Test the NAND
-        #2 aluControlCode = 13;                         //Test the MOV
+        readData1VAL = 15; readData2VAL = 15; aluControlCodeVAL = 2;  //Test the add
+        #2 aluControlCodeVAL = 7;                                     //Test the CBZ
+        #2 readData1VAL = 10;                                         //change readData1VAL to 10
+        #2 aluControlCodeVAL = 3;                                     //Test the subtraction
+        #2 readData1VAL = 5;                                          //change readData1VAL to 5
+        #2 aluControlCodeVAL = 6;                                     //Test the bitwise AND
+        #2 aluControlCodeVAL = 4;                                     //Test the bitwise OR
+        #2 readData2VAL = 10;                                         //change readData2 to 10
+        #2 aluControlCodeVAL = 9;                                     //Test the bitwise XOR
+        #2 aluControlCodeVAL = 5;                                     //Test the NOR
+        #2 aluControlCodeVAL = 12;                                    //Test the NAND
+        #2 aluControlCodeVAL = 13;                                    //Test the MOV
     end
     always
         #1 clock = ~clock;
