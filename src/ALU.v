@@ -24,8 +24,8 @@ module top;
     wire [4:0] readRegister2;       //register 2 ID from Decoder & Control to Operand Prep
     wire [4:0] writeRegister;       //write register ID from Decoder & Control to Operand Prep
     
-    wire [31:0] readData1;  //input to ALU from operand preperation
-    wire [31:0] readData2;  //input to ALU from operand preperation
+    reg [31:0] readData1;  //input to ALU from operand preperation
+    reg [31:0] readData2;  //input to ALU from operand preperation
     wire [31:0] pcOffsetOrig;       //original PC counter. Used in PC and operand preperation. SHOULD THIS BE AN INOUT??Needs to get changed.
     wire [31:0] pcOffsetFilled;     //Sign extended PC offset. NOT SURE HOW THIS IS BEING LINKED
     wire [31:0] pcScaledOffset;     //I DO NOT THINK THAT THIS VARIABLE SHOULD EXIST. SHOULD BE A LOCAL WITHIN PC NOT OUTPUT BACK.
@@ -47,20 +47,20 @@ module top;
         
 
 	initial begin
-		$monitor("input1: ", input1, "\t input2: ",input2,"\t aluControlCode: ",aluControlCode,
+		$monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
         "\t result: ",result);
 	end	
 
     //This is the test function all of the #number represents a timing delay
 	initial begin
-		input1 = 15; input2 = 15; aluControlCode = 2;   //Test the add
+		readData1 = 15; readData2 = 15; aluControlCode = 2;   //Test the add
 		#2 aluControlCode = 7;                          //Test the CBZ
-		#2 input1 = 10;                         //change input1 to 10
+		#2 readData1 = 10;                         //change readData1 to 10
 		#2 aluControlCode = 3;                          //Test the subtraction
-		#2 input1 = 5;                          //change input1 to 5
+		#2 readData1 = 5;                          //change readData1 to 5
 		#2 aluControlCode = 6;                          //Test the bitwise AND
 		#2 aluControlCode = 4;                          //Test the bitwise OR
-		#2 input2 = 10;                         //change input2 to 10
+		#2 readData2 = 10;                         //change readData2 to 10
 		#2 aluControlCode = 9;                          //Test the bitwise XOR
 		#2 aluControlCode = 5;                          //Test the NOR
 		#2 aluControlCode = 12;                         //Test the NAND
