@@ -4,6 +4,7 @@ module top;
     reg [3:0] aluControlCode;        //ALU control code
     reg clock;                      //clock for entire processor
     wire zeroFlag;                  //zero flag from ALU for use in PC
+    wire carryBit;                  //carrybit flag
 
     wire memWriteFlag;              //flag from Decoder & Control for use in Data Cache
     wire memReadFlag;               //flag from Decoder & Control for use in Data Cache
@@ -31,7 +32,8 @@ module top;
     wire [31:0] pcScaledOffset;     //I DO NOT THINK THAT THIS VARIABLE SHOULD EXIST. SHOULD BE A LOCAL WITHIN PC NOT OUTPUT BACK.
 
 
-    ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag, clock);
+    ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag,
+        clock, carryBit);
     DataCache dataCacheInstance(memWriteFlag, memReadFlag, memToRegFlag, result,
         readData2, readData, clock);
     Controller controllerInstance(opcodeInstruction, unconditionalBranchFlag,
@@ -57,22 +59,22 @@ module top;
     assign readData1 = test1;
     assign readData2 = test2;
 
-  //This is the test function all of the #number represents a timing delay
-initial begin
-  clock = 0;
-  test1 = 15; test2 = 15; aluControlCode = 2;   //Test the add
-  #2 aluControlCode = 7;                          //Test the CBZ
-  #2 test1 = 10;                         //change test1 to 10
-  #2 aluControlCode = 3;                          //Test the subtraction
-  #2 test1 = 5;                          //change test1 to 5
-  #2 aluControlCode = 6;                          //Test the bitwise AND
-  #2 aluControlCode = 4;                          //Test the bitwise OR
-  #2 test2 = 10;                         //change readData2 to 10
-  #2 aluControlCode = 9;                          //Test the bitwise XOR
-  #2 aluControlCode = 5;                          //Test the NOR
-  #2 aluControlCode = 12;                         //Test the NAND
-  #2 aluControlCode = 13;                         //Test the MOV
-end
-  always
-      #1 clock = ~clock;
+    //This is the test function all of the #number represents a timing delay
+    initial begin
+        clock = 0;
+        test1 = 15; test2 = 15; aluControlCode = 2;     //Test the add
+        #2 aluControlCode = 7;                          //Test the CBZ
+        #2 test1 = 10;                                  //change test1 to 10
+        #2 aluControlCode = 3;                          //Test the subtraction
+        #2 test1 = 5;                                   //change test1 to 5
+        #2 aluControlCode = 6;                          //Test the bitwise AND
+        #2 aluControlCode = 4;                          //Test the bitwise OR
+        #2 test2 = 10;                                  //change readData2 to 10
+        #2 aluControlCode = 9;                          //Test the bitwise XOR
+        #2 aluControlCode = 5;                          //Test the NOR
+        #2 aluControlCode = 12;                         //Test the NAND
+        #2 aluControlCode = 13;                         //Test the MOV
+    end
+    always
+        #1 clock = ~clock;
 endmodule
