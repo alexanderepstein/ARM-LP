@@ -15,7 +15,7 @@ module ALU (inOne, inTwo, opcode,result, zeroFlag, clock, carryBit);
         carryBit = 0;
 		case(opcode)
 			4'b0010: {carryBit,result} = inOne + inTwo;    //LD_STR_ADD opcode
-			4'b0111: result = inTwo == 0;       //CBZ opcode
+			4'b0111: result = 0;       //CBZ opcode
 			4'b1010: {carryBit,result} = inOne - inTwo;    //SUB opcode
 			4'b0110: result = inOne & inTwo;    //bitwise AND opcode
 			4'b0100: result = inOne | inTwo;    //bitwise OR opcode
