@@ -3,6 +3,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     readRegister2,  writeRegister, clock) ;
     
     input [31:0] instruction; //instruction being input into the controller from instruction cache for parsing
+    
     output wire unconditionalBranch; //Flag output from the controller into the pc
     output wire branch;              //Flag output from the controller into the pc
     output wire memRead;             //Flag output from the controller for use in Data Cache
