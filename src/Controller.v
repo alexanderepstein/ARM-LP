@@ -32,7 +32,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     reg memWriteReg;
     reg aluSRCReg;
     reg regWriteFlagReg;
-    reg aluControlCodeVal;
+    reg [3:0] aluControlCodeVal;
     //Internal assigns to registers to allow compile and constrain updates to clocks
     assign unconditionalBranch = unconditionalBranchReg;
     assign branch = branchReg;
