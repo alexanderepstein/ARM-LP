@@ -176,6 +176,9 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         //then slam it right 5 bits
         readRegister1 = (instruction & 32'h000003E0) >> 5;
         
+        //lowest 5 bits
+        writeRegister = (instruction & 32'h0000001F);
+
         
         //ALU control code logic is on pg 273 in book.
         //ALU control code 0001 is based soley off of ALUOP1 and i29
