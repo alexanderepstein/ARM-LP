@@ -54,13 +54,13 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         
         //bit 31 always on for all instructions
         //reg2loc i25 and i28 are the dependent bits
-        reg2Loc = (instruction[3] == 1 && instruction[6] == 0) ? 1 : 0;
+        reg2Loc = (instruction[28] == 1 && instruction[25] == 0) ? 1 : 0;
         
         //aluSRC  dependent on i25 and i28 OR i26 and i30 
         //check to see if i25 and i28 are set
-        if (instruction[3] == 1 && instruction[6] == 0) begin
+        if (instruction[28] == 1 && instruction[25] == 0) begin
             //rule out CBZ
-            if (instruction[1] == 0 && instruction[5] == 1) begin
+            if (instruction[30] == 0 && instruction[26] == 1) begin
                 aluSRCReg = 0;
             end
             //accept others
@@ -74,18 +74,18 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         end
         
         //memToReg can be based soley on i22
-        memToRegReg = (instruction[9] == 1) ? 1 : 0;
+        memToRegReg = (instruction[22] == 1) ? 1 : 0;
         
         //i22 & i26 also ldr for regWriteFlag
-        if (instruction[9] == 1 && instruction[5] == 0) begin
+        if (instruction[22] == 1 && instruction[26] == 0) begin
             regWriteFlagReg = 1;
         end
         //i25 and i28 for r type
-        else if (instruction[6] == 0 && instruction[3] == 0) begin
+        else if (instruction[25] == 0 && instruction[28] == 0) begin
             regWriteFlagReg = 1;
         end
         //i26 and i27 for i type
-        else if (instruction[5] == 0 && instruction[4] == 0) begin
+        else if (instruction[26] == 0 && instruction[27] == 0) begin
             regWriteFlagReg = 1;
         end
         //Those all have it on. Other wise, off.
@@ -94,7 +94,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         end
         
         //memRead only load does this. i22 and i26
-        if (instruction[9] == 1 && instruction[5] == 0) begin
+        if (instruction[22] == 1 && instruction[26] == 0) begin
             memReadReg = 1;
         end
         else begin
@@ -102,8 +102,8 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         end
         
         //memWrite only str does this. Dependent on i22, i25, i26, i27
-        if (instruction[9] == 0 && instruction[6] == 0 && instruction[5] == 0 
-            && instruction[4] == 1) begin
+        if (instruction[22] == 0 && instruction[25] == 0 && instruction[26] == 0 
+            && instruction[27] == 1) begin
             memWriteReg = 1;
         end
         else begin
@@ -113,7 +113,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         //branch flag is set on the CBZs. 
         //I am ruling OUT i24 bit 8 as CBZ and CBNZ differ on it
         //based soley on i26
-        if (instruction[5] == 1) begin
+        if (instruction[26] == 1) begin
             branchReg = 1;
         end
         else begin
@@ -121,8 +121,8 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         end
         
         //unconditionalBranch occurs only on a branch and a branch and link
-        if (instruction[1] == 0 && instruction[2] == 0 && instruction[3] == 1 
-            && instruction[4] == 0 && instruction[5] == 1) begin
+        if (instruction[30] == 0 && instruction[29] == 0 && instruction[28] == 1 
+            && instruction[27] == 0 && instruction[26] == 1) begin
             unconditionalBranchReg = 1;
         end
         else begin
@@ -131,15 +131,15 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         
         //aluOp1
         //i22 rules out load
-        if (instruction[9] == 1) begin
+        if (instruction[22] == 1) begin
             aluOp1 = 0;
         end
         //i26 rules out cbz
-        else if (instruction[5] == 1) begin
+        else if (instruction[26] == 1) begin
             aluOp1 = 0;
         end
         //i25 then i27 to rule out store.
-        else if (instruction[6] == 0 && instruction[4] == 1) begin
+        else if (instruction[25] == 0 && instruction[27] == 1) begin
             aluOp1 = 0;
         end
         else begin
@@ -147,7 +147,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         end
         
         //ALUOP0 is only on for branching
-        if (instruction[5] == 1) begin
+        if (instruction[26] == 1) begin
             aluOp0 = 1;
         end
         else begin 
@@ -158,39 +158,40 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         //register 2 is based on mux select reg2Loc
         if(reg2Loc == 1) begin
             //grab lower 5 bits
-            readRegister2 = (instruction & 32'hF8000000) >> 27;
-            //xxxx_x000_0000_0000_0000_0000_0000_0000 is the masking
-            // F    8    0    0     0    0    0    0
-            //then slam it right by 27 bits
+            readRegister2 = (instruction & 32'h0000001F);
+            //0000_0000_0000_0000_0000_0000_000x_xxxx is the masking
+            // 0    0    0    0     0    0    1    F
         end
         else begin
-            //0000_0000_0000_0000_xxxx_x000_0000_0000 is the mask
-            //0     0    0    0    F   8     0     0
-            //then slam it right 11 bits
-            readRegister2 = (instruction & 32'h0000F800) >> 11;
+            //bits 16-20
+            //0000_0000_000x_xxxx_0000_0000_0000_0000 is the mask
+            //0     0    1    F    0    0     0     0
+            //then slam it right 16 bits
+            readRegister2 = (instruction & 32'h001F0000) >> 16;
         end
         
-        //0000_0xxx_xx00_0000_0000_0000_0000_0000 is the masking
-        //0     7    c    0    0    0    0    0
-        //then slam it right 22 bits
-        readRegister1 = (instruction & 32'h07C00000) >> 22;
+        //bits 5-9
+        //0000_0000_0000_0000_0000_00xx_xxx0_0000 is the masking
+        //0     0    0    0    0    3    e    0
+        //then slam it right 5 bits
+        readRegister1 = (instruction & 32'h000003E0) >> 5;
         
         
         //ALU control code logic is on pg 273 in book.
         //ALU control code 0001 is based soley off of ALUOP1 and i29
-        if (aluOp1 == 1 && instruction[2] == 1) begin
+        if (aluOp1 == 1 && instruction[29] == 1) begin
             aluControlCodeVal = 4'b001;
         end
         //i29 and i24
-        else if (aluOp1 == 1 && instruction[2] == 0 && instruction[7] == 0) begin
+        else if (aluOp1 == 1 && instruction[29] == 0 && instruction[24] == 0) begin
             aluControlCodeVal = 4'b0000;
         end
         //i30
-        else if (aluOp1 == 1 && instruction[1] == 1) begin
+        else if (aluOp1 == 1 && instruction[30] == 1) begin
             aluControlCodeVal = 4'b0110;
         end
         //also i30
-        else if (aluOp1 == 1 && instruction[1] == 0) begin
+        else if (aluOp1 == 1 && instruction[30] == 0) begin
             aluControlCodeVal = 4'b0010;
         end
         //aluOp0 dependents now
