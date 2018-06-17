@@ -35,7 +35,7 @@ module top;
     Controller controllerInstance(instruction, unconditionalBranchFlag,
         branchFlag, memReadFlag, memToRegFlag, aluControlCode, memWriteFlag, aluSRC,
         regWriteFlag, readRegister1, readRegister2, writeRegister, clock);
-    InstructionCache instructionCacheInstance(PC, instruction, clock);
+    //InstructionCache instructionCacheInstance(PC, instruction, clock);
     OperationPrep operationPrepInstance(regWriteFlag, readRegister1, readRegister2,
         writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
         pcOffsetFilled, clock);
@@ -50,37 +50,37 @@ module top;
     end
 
     //This is a workaround to couple both inputs AND outputs from modules to a register.
-    reg [31:0] readData1VAL         = 0;
-    reg [31:0] readData2VAL         = 0;
-    reg [31:0] aluControlCodeVAL    = 0;
+    //reg [31:0] readData1VAL         = 0;
+    //reg [31:0] readData2VAL         = 0;
+    //reg [31:0] aluControlCodeVAL    = 0;
     reg [31:0] instructionVAL       = 0;
-    
-    assign readData1 = readData1VAL;
-    assign readData2 = readData2VAL;
-    assign aluControlCode = aluControlCodeVAL;
+    //
+    //assign readData1 = readData1VAL;
+    //assign readData2 = readData2VAL;
+    //assign aluControlCode = aluControlCodeVAL;
     assign instruction = instructionVAL;
     //assign pcOffsetOrig = instructionVAL; //PC offset orig is just raw instruction.
 
     //This is the test function all of the #number represents a timing delay
     initial begin
         clock = 0;
-        readData1VAL = 15; readData2VAL = 15; aluControlCodeVAL = 2;  //Test the add
-        #2 aluControlCodeVAL = 7;                                     //Test the CBZ
-        #2 readData1VAL = 10;                                         //change readData1VAL to 10
-        #2 aluControlCodeVAL = 10;                                     //Test the subtraction
-        //Test a large addition
-        #2 readData1VAL = 2140483647;
-        #2 readData2VAL = 2141483647;
-        #2 aluControlCodeVAL = 2;
-        
-        #2 readData1VAL = 5;                                          //change readData1VAL to 5
-        #2 aluControlCodeVAL = 6;                                     //Test the bitwise AND
-        #2 aluControlCodeVAL = 4;                                     //Test the bitwise OR
-        #2 readData2VAL = 10;                                         //change readData2 to 10
-        #2 aluControlCodeVAL = 9;                                     //Test the bitwise XOR
-        #2 aluControlCodeVAL = 5;                                     //Test the NOR
-        #2 aluControlCodeVAL = 12;                                    //Test the NAND
-        #2 aluControlCodeVAL = 13;                                    //Test the MOV
+    //    readData1VAL = 15; readData2VAL = 15; aluControlCodeVAL = 2;  //Test the add
+    //    #2 aluControlCodeVAL = 7;                                     //Test the CBZ
+    //    #2 readData1VAL = 10;                                         //change readData1VAL to 10
+    //    #2 aluControlCodeVAL = 10;                                     //Test the subtraction
+    //    //Test a large addition
+    //    #2 readData1VAL = 2140483647;
+    //    #2 readData2VAL = 2141483647;
+    //    #2 aluControlCodeVAL = 2;
+    //    
+    //    #2 readData1VAL = 5;                                          //change readData1VAL to 5
+    //    #2 aluControlCodeVAL = 6;                                     //Test the bitwise AND
+    //    #2 aluControlCodeVAL = 4;                                     //Test the bitwise OR
+    //    #2 readData2VAL = 10;                                         //change readData2 to 10
+    //    #2 aluControlCodeVAL = 9;                                     //Test the bitwise XOR
+    //    #2 aluControlCodeVAL = 5;                                     //Test the NOR
+    //    #2 aluControlCodeVAL = 12;                                    //Test the NAND
+    //    #2 aluControlCodeVAL = 13;                                    //Test the MOV
         #2 instructionVAL = 32'h8B150289;                             //ADD R9, R20, R21
         #2 instructionVAL = 32'h910006D6;                             //ADDI R22, R22, #1
     end
