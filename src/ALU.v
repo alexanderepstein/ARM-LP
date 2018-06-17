@@ -12,7 +12,6 @@ module ALU (inOne, inTwo, opcode,result, zeroFlag, clock, carryBit);
  assign zeroFlag = inTwo == 0 ? 1 : 0; // Flag is set if inTwo is a 0
 
  always @(posedge clock) begin
-        carryBit = 0;
 		case(opcode)
 			4'b0010: {carryBit,result} = inOne + inTwo;    //LD_STR_ADD opcode
 			4'b0111: result = 0;       //CBZ opcode
