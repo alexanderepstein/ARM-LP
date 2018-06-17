@@ -32,6 +32,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     reg memWriteReg;
     reg aluSRCReg;
     reg regWriteFlagReg;
+    reg aluControlCodeVal;
     //Internal assigns to registers to allow compile and constrain updates to clocks
     assign unconditionalBranch = unconditionalBranchReg;
     assign branch = branchReg;
@@ -40,8 +41,12 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     assign memWrite = memWriteReg;
     assign aluSRC = aluSRCReg;
     assign regWriteFlag = regWriteFlagReg;
+    assign aluControlCode = aluControlCodeVal;
     
-    //We will have to do some masking and things to parse the instruction
+    reg unAccountedALUControlCode = 0;
+    
+    //I AM NOT SURE HOW VERILOG HANDLES ENDIANNESS FOR THIS LAB. I HAVE DONE IT
+    //AS INSTRUCTION[0] IS FIRST BIT OF OPCODE (instruction 31 in documents)
 
     always @(posedge clock) begin
         //the endianess for the table I am using starts bit 31 as bit 0 as indexed
@@ -148,11 +153,58 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         else begin 
             aluOp0 = 0;
         end
+
+        //set up the read registers.
+        //register 2 is based on mux select reg2Loc
+        if(reg2Loc == 1) begin
+            //grab lower 5 bits
+            readRegister2 = (instruction & 32'hF8000000) >> 27;
+            //xxxx_x000_0000_0000_0000_0000_0000_0000 is the masking
+            // F    8    0    0     0    0    0    0
+            //then slam it right by 27 bits
+        end
+        else begin
+            //0000_0000_0000_0000_xxxx_x000_0000_0000 is the mask
+            //0     0    0    0    F   8     0     0
+            //then slam it right 11 bits
+            readRegister2 = (instruction & 32'h0000F800) >> 11;
+        end
         
-        //we need to handle aluControlCode and reg2Loc at some point
+        //0000_0xxx_xx00_0000_0000_0000_0000_0000 is the masking
+        //0     7    c    0    0    0    0    0
+        //then slam it right 22 bits
+        readRegister1 = (instruction & 32'h07C00000) >> 22;
         
-        //HAVE TO SET UP THE REGISTERS TOO!
         
+        //ALU control code logic is on pg 273 in book.
+        //ALU control code 0001 is based soley off of ALUOP1 and i29
+        if (aluOp1 == 1 && instruction[2] == 1) begin
+            aluControlCodeVal = 4'b001;
+        end
+        //i29 and i24
+        else if (aluOp1 == 1 && instruction[2] == 0 && instruction[7] == 0) begin
+            aluControlCodeVal = 4'b0000;
+        end
+        //i30
+        else if (aluOp1 == 1 && instruction[1] == 1) begin
+            aluControlCodeVal = 4'b0110;
+        end
+        //also i30
+        else if (aluOp1 == 1 && instruction[1] == 0) begin
+            aluControlCodeVal = 4'b0010;
+        end
+        //aluOp0 dependents now
+        else if (aluOp0 == 1) begin
+            aluControlCodeVal = 4'b0111;
+        end
+        else if (aluOp0 == 0 && aluOp0 == 0) begin
+            aluControlCodeVal = 4'b0010;
+        end
+        else begin
+            //unaccounted for case. Throwing up a debug register
+            unAccountedALUControlCode = 1;
+        end
+                
         
     end
 
