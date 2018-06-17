@@ -50,12 +50,16 @@ module top;
     end
 
     //This is a workaround to couple both inputs AND outputs from modules to a register.
-    reg [31:0] readData1VAL;
-    reg [31:0] readData2VAL;
-    reg [31:0] aluControlCodeVAL;
+    reg [31:0] readData1VAL         = 0;
+    reg [31:0] readData2VAL         = 0;
+    reg [31:0] aluControlCodeVAL    = 0;
+    reg [31:0] instructionVAL       = 0;
+    
     assign readData1 = readData1VAL;
     assign readData2 = readData2VAL;
     assign aluControlCode = aluControlCodeVAL;
+    assign instruction = instructionVAL;
+    //assign pcOffsetOrig = instructionVAL; //PC offset orig is just raw instruction.
 
     //This is the test function all of the #number represents a timing delay
     initial begin
@@ -77,6 +81,8 @@ module top;
         #2 aluControlCodeVAL = 5;                                     //Test the NOR
         #2 aluControlCodeVAL = 12;                                    //Test the NAND
         #2 aluControlCodeVAL = 13;                                    //Test the MOV
+        #2 instructionVAL = 32'h8B150289;                             //ADD R9, R20, R21
+        #2 instructionVAL = 32'h910006D6;                             //ADDI R22, R22, #1
     end
     always
         #1 clock = ~clock;
