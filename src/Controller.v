@@ -42,16 +42,8 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     assign aluSRC = aluSRCReg;
     assign regWriteFlag = regWriteFlagReg;
     assign aluControlCode = aluControlCodeVal;
-    
-    reg unAccountedALUControlCode = 0;
-    
-    //I AM NOT SURE HOW VERILOG HANDLES ENDIANNESS FOR THIS LAB. I HAVE DONE IT
-    //AS INSTRUCTION[0] IS FIRST BIT OF OPCODE (instruction 31 in documents)
-
-    always @(posedge clock) begin
-        //the endianess for the table I am using starts bit 31 as bit 0 as indexed
-        //here in this code, hence why the array indexing appears off.
         
+    always @(posedge clock) begin        
         //bit 31 always on for all instructions
         //reg2loc i25 and i28 are the dependent bits
         reg2Loc = (instruction[28] == 1 && instruction[25] == 0) ? 1 : 0;
@@ -80,8 +72,8 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         if (instruction[22] == 1 && instruction[26] == 0) begin
             regWriteFlagReg = 1;
         end
-        //i25 and i28 for r type
-        else if (instruction[25] == 0 && instruction[28] == 0) begin
+        //i25 and i28 for r type (and mov)
+        else if (instruction[25] == 1 && instruction[28] == 0) begin
             regWriteFlagReg = 1;
         end
         //i26 and i27 for i type
@@ -93,8 +85,8 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
             regWriteFlagReg = 0;
         end
         
-        //memRead only load does this. i22 and i26
-        if (instruction[22] == 1 && instruction[26] == 0) begin
+        //memRead only load does this. i22 and i26 and i25
+        if (instruction[22] == 1 && instruction[26] == 0 && instruction[25] == 0) begin
             memReadReg = 1;
         end
         else begin
@@ -141,6 +133,10 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         //i25 then i27 to rule out store.
         else if (instruction[25] == 0 && instruction[27] == 1) begin
             aluOp1 = 0;
+        end
+        //rule out MOV. i26 and i23
+        else if (instruction[26] == 0 && instruction[23] == 1) begin
+            aluOp0 = 0;
         end
         else begin
             aluOp1 = 1;
@@ -204,9 +200,14 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         else if (aluOp0 == 0 && aluOp0 == 0) begin
             aluControlCodeVal = 4'b0010;
         end
+        //This is the MOV ALU OP code as defined by the ARM TRM
+        else if (aluOp1 == 0 && aluOp0 == 0 && instruction[23] == 1 && instruction[26] == 0) begin
+            aluControlCodeVal = 4'b1101;
+        end
         else begin
             //unaccounted for case. Throwing up a debug register
-            unAccountedALUControlCode = 1;
+            //Used for debugging. Thats it.
+            aluControlCodeVal = 'bx;
         end
                 
         

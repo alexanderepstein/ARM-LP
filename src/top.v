@@ -44,10 +44,10 @@ module top;
 
 
 
-    initial begin
-        $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
-        "\t result: ",result, "\t zeroFlag ", zeroFlag, "\t carryBit ", carryBit);
-    end
+    //initial begin
+    //    $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
+    //    "\t result: ",result, "\t zeroFlag ", zeroFlag, "\t carryBit ", carryBit);
+    //end
 
     //This is a workaround to couple both inputs AND outputs from modules to a register.
     //reg [31:0] readData1VAL         = 0;
@@ -81,8 +81,27 @@ module top;
     //    #2 aluControlCodeVAL = 5;                                     //Test the NOR
     //    #2 aluControlCodeVAL = 12;                                    //Test the NAND
     //    #2 aluControlCodeVAL = 13;                                    //Test the MOV
-        #2 instructionVAL = 32'h8B150289;                             //ADD R9, R20, R21
+        #3 instructionVAL = 32'h8B150289;                             //ADD R9, R20, R21
+        #2 instructionVAL = 32'hcB150289;                             //SUB R9, R20, R21
+        #2 instructionVAL = 32'h8A150289;                             //AND R9, R20, R21
+        #2 instructionVAL = 32'hAA150289;                             //OR R9, R20, R21
+
         #2 instructionVAL = 32'h910006D6;                             //ADDI R22, R22, #1
+        #2 instructionVAL = 32'hF8400149;                             //LDR  R9, [R10, #0]
+        //do a store next STUR X10, [X1, #0]
+        //1111 1000 0000 0000 0000 0000 0010 1010
+        //F   8    0     0    0    0    2   a
+        #2 instructionVAL = 32'hF800002A;                              //STR R10, [R1, #0]
+        //CBZ 1011 0100 0000 1000 0000 0000 0000 0000
+        //     b    4    0     8   0   0     0     0
+        //Here CBZ R1 Here
+        #2 instructionVAL = 32'hB4080000;                             //Here CBZ R1 Here
+        //0001 0100 0000 0000 0000 0000 0000 0000
+        //1     4    0    0     0    0    0    0       
+        #2 instructionVAL = 32'h14000000;                              //Here B Here
+        //This mov command is from the textbook pg 116. Verify the outputs are ok for this one as we did add.
+        #2 instructionVAL = 32'hD2A01FE9;                              //MOVZ X9, 255, LSL 16
+        
     end
     always
         #1 clock = ~clock;
