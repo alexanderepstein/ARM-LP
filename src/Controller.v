@@ -22,8 +22,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     //reg2Loc field stays within this field and can thus be handled as a local variable.
     reg reg2Loc;
     
-    reg aluOp1;
-    reg aluOp0;
+    reg [1:0] aluOp;
     
     reg unconditionalBranchReg;
     reg branchReg;
@@ -121,33 +120,33 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
             unconditionalBranchReg = 0;
         end
         
-        //aluOp1
+        //aluOp[1]
         //i22 rules out load
         if (instruction[22] == 1) begin
-            aluOp1 = 0;
+            aluOp[1] = 0;
         end
         //i26 rules out cbz
         else if (instruction[26] == 1) begin
-            aluOp1 = 0;
+            aluOp[1] = 0;
         end
         //i25 then i27 to rule out store.
         else if (instruction[25] == 0 && instruction[27] == 1) begin
-            aluOp1 = 0;
+            aluOp[1] = 0;
         end
         //rule out MOV. i26 and i23
         else if (instruction[26] == 0 && instruction[23] == 1) begin
-            aluOp0 = 0;
+            aluOp[1] = 0;
         end
         else begin
-            aluOp1 = 1;
+            aluOp[1] = 1;
         end
         
         //ALUOP0 is only on for branching
         if (instruction[26] == 1) begin
-            aluOp0 = 1;
+            aluOp[0] = 1;
         end
         else begin 
-            aluOp0 = 0;
+            aluOp[0] = 0;
         end
 
         //set up the read registers.
@@ -178,30 +177,30 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
         
         //ALU control code logic is on pg 273 in book.
         //ALU control code 0001 is based soley off of ALUOP1 and i29
-        if (aluOp1 == 1 && instruction[29] == 1) begin
+        if (aluOp[1] == 1 && instruction[29] == 1) begin
             aluControlCodeVal = 4'b001;
         end
         //i29 and i24
-        else if (aluOp1 == 1 && instruction[29] == 0 && instruction[24] == 0) begin
+        else if (aluOp[1] == 1 && instruction[29] == 0 && instruction[24] == 0) begin
             aluControlCodeVal = 4'b0000;
         end
         //i30
-        else if (aluOp1 == 1 && instruction[30] == 1) begin
+        else if (aluOp[1] == 1 && instruction[30] == 1) begin
             aluControlCodeVal = 4'b0110;
         end
         //also i30
-        else if (aluOp1 == 1 && instruction[30] == 0) begin
+        else if (aluOp[1] == 1 && instruction[30] == 0) begin
             aluControlCodeVal = 4'b0010;
         end
         //aluOp0 dependents now
-        else if (aluOp0 == 1) begin
+        else if (aluOp[0] == 1) begin
             aluControlCodeVal = 4'b0111;
         end
-        else if (aluOp0 == 0 && aluOp0 == 0) begin
+        else if (aluOp[1] == 0 && aluOp[0] == 0) begin
             aluControlCodeVal = 4'b0010;
         end
         //This is the MOV ALU OP code as defined by the ARM TRM
-        else if (aluOp1 == 0 && aluOp0 == 0 && instruction[23] == 1 && instruction[26] == 0) begin
+        else if (aluOp[1] == 0 && aluOp[0] == 0 && instruction[23] == 1 && instruction[26] == 0) begin
             aluControlCodeVal = 4'b1101;
         end
         else begin
