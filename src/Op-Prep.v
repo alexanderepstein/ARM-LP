@@ -22,7 +22,9 @@ output reg [31:0] pcOffsetFilled; // PC padded with 0s to be 32 bits;
 
 
 	always @(posedge clock) begin
-    //readData1 = reg1; How to get value at this?
+    // if (regWrite == 1) begin  Data at writeRegister = writeData; end
+    //if (aluSRC == 0) begin readData2 = Data at reg2; end
+    //else begin readData2 = instruction [16:0]; end or something like that
     end
 
 endmodule
