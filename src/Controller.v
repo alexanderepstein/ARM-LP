@@ -36,7 +36,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
 
 
     assign reg2Loc = opType == `CB_TYPE || opType == `ST_TYPE ? 1 : 0;
-    assign aluSRC = opType == `R_TYPE || `CB_TYPE ? 0 : 1; 
+    assign aluSRC = opType == `R_TYPE || opType == `CB_TYPE ? 0 : 1;
     assign memToReg = opType == `LD_TYPE ? 1 : 0;
     assign regWriteFlag = opType == `R_TYPE || opType == `LD_TYPE || opType == `M_TYPE ? 1 : 0;
     assign memRead = opType == `LD_TYPE ? 1 : 0;
@@ -46,6 +46,12 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
 
     //assign aluControlCode = opType;
     always @* begin
+      // determine addresses for op-prep
+      readRegister1 = instruction[9:5];
+      if (reg2Loc == 0) begin readRegister2 = instruction[20:16]; end
+      else begin readRegister2 = instruction[4:0]; end
+      writeRegister = instruction[4:0];
+
       // Determine optype
       if (instruction[26] == 1) begin
         if (instruction[29] == 1) begin opType = `CB_TYPE; end
