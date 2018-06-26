@@ -12,7 +12,8 @@
   module Processor(instructionVAL, regWriteOUT, opTypeOUT, memWriteOUT, memReadOUT,
      aluControlCodeOUT, branchFlagOUT, ubranchOUT, aluSRCOUT);
   input [31:0] instructionVAL;
-
+  input [31:0] readData1VAL;
+  input [31:0] readData2VAL;
   output regWriteOUT;
   output [2:0] opTypeOUT;
   output memWriteOUT;
@@ -30,9 +31,7 @@
   assign ubranchOUT = unconditionalBranchFlag;
   assign aluControlCodeOUT = aluControlCode;
   assign aluSRCOUT = aluSRC;
-  //This is a workaround to couple both inputs AND outputs from modules to a register.
-  reg [31:0] readData1VAL;
-  reg [31:0] readData2VAL;
+  //This is a workaround to couple both inputs AND outputs from modules to a registers
   reg [3:0] aluControlCodeVAL;
   assign instruction = instructionVAL;
   assign readData1 = readData1VAL;
