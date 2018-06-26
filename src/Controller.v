@@ -1,3 +1,5 @@
+`ifndef CONTROLLER
+`define CONTROLLER
 module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     aluControlCode, memWrite, aluSRC, regWriteFlag, readRegister1,
     readRegister2,  writeRegister, clock) ;
@@ -29,3 +31,4 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     end
 
 endmodule
+`endif

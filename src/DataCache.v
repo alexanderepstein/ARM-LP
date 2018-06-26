@@ -1,3 +1,6 @@
+`ifndef DATACACHE
+`define DATACACHE
+
 module DataCache( memWrite,  memRead, memToReg, address,  writeData,  readData, clock);
 
  input clock; // Clock
@@ -13,3 +16,5 @@ module DataCache( memWrite,  memRead, memToReg, address,  writeData,  readData, 
 
   end
 endmodule
+
+`endif
