@@ -35,9 +35,6 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     reg [1:0] aluOP; // Local feld that will help determine outout for aluControlCode
 
 
-
-
-
     assign reg2Loc = opType == `CB_TYPE || opType == `ST_TYPE ? 1 : 0;
     assign aluSRC = opType == `LD_TYPE || opType == `ST_TYPE || opType == `M_TYPE ? 1 : 0; // MOV is going to use an immediate not a second reg
     assign memToReg = opType == `LD_TYPE ? 1 : 0;
@@ -66,13 +63,31 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
       else if (opType == `CB_TYPE) begin aluOP = 1; end
 
       //Determine ALU Control Code
-      if (aluOP == 0) begin aluControlCode = 4'b0010; end
-      else if (aluOP == 1) begin aluControlCode = 4'b0111; end
+      if (opType == `LD_TYPE || opType == `ST_TYPE) begin
+        aluControlCode = 4'b0010; // Add opcode for load and store
+      end
+      else if (aluOP == 1) begin aluControlCode = 4'b0111; end // CBZ opcode
+      else if (opType == `M_TYPE) begin aluControlCode = 4'b1101; end // MOV opcode
+      else if (aluOP == 2) begin // R_TYPE
+        if (instruction[24] == 1) begin //ADD or SUB
+          if (instruction[30] == 0) begin aluControlCode = 4'b0010; end // ADD
+          else begin aluControlCode = 4'b1010; end // SUB
+        end
+        else if (instruction[29] == 0) begin aluControlCode = 4'b0110; end // AND
+        else if (instruction[30] == 0) begin aluControlCode = 4'b0100; end // OR
+        else begin aluControlCode = 4'b1001; end //XOR
+      end
+      else if (opType == `I_TYPE) begin
+        if (instruction[29] == 1) begin aluControlCode = 4'b0100; end // ORI
+        else if (instruction[30] == 1) begin // XORI or SUBI
+          if (instruction[25] == 1) begin aluControlCode = 4'b1001; end //XORI
+          else begin aluControlCode = 4'b1010; end
+        end
+        else if (instruction[25] == 1) begin aluControlCode = 4'b0110; end // ANDI
+        else begin aluControlCode =  4'b0010; end // ADDI
+      end
       else begin
-        if (instruction[30] == 1) begin aluControlCode = 4'b0110; end
-        else if (instruction[29] == 1) begin aluControlCode = 4'b0001; end
-        else if (instruction[24] == 1) begin aluControlCode = 4'b0010; end
-        else begin aluControlCode = 4'b0000; end
+        aluControlCode = 0; // Default
       end
     end
 
