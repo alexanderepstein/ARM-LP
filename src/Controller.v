@@ -36,7 +36,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
 
 
     assign reg2Loc = opType == `CB_TYPE || opType == `ST_TYPE ? 1 : 0;
-    assign aluSRC = opType == `LD_TYPE || opType == `ST_TYPE || opType == `M_TYPE ? 1 : 0; // MOV is going to use an immediate not a second reg
+    assign aluSRC = opType == `R_TYPE || `CB_TYPE ? 0 : 1; 
     assign memToReg = opType == `LD_TYPE ? 1 : 0;
     assign regWriteFlag = opType == `R_TYPE || opType == `LD_TYPE || opType == `M_TYPE ? 1 : 0;
     assign memRead = opType == `LD_TYPE ? 1 : 0;
@@ -64,27 +64,27 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
 
       //Determine ALU Control Code
       if (opType == `LD_TYPE || opType == `ST_TYPE) begin
-        aluControlCode = 4'b0010; // Add opcode for load and store
+        aluControlCode = 4'b0010; // Add opcode for load and store 2
       end
-      else if (aluOP == 1) begin aluControlCode = 4'b0111; end // CBZ opcode
-      else if (opType == `M_TYPE) begin aluControlCode = 4'b1101; end // MOV opcode
+      else if (aluOP == 1) begin aluControlCode = 4'b0111; end // CBZ opcode 7
+      else if (opType == `M_TYPE) begin aluControlCode = 4'b1101; end // MOV opcode 13
       else if (aluOP == 2) begin // R_TYPE
         if (instruction[24] == 1) begin //ADD or SUB
-          if (instruction[30] == 0) begin aluControlCode = 4'b0010; end // ADD
-          else begin aluControlCode = 4'b1010; end // SUB
+          if (instruction[30] == 0) begin aluControlCode = 4'b0010; end // ADD 2
+          else begin aluControlCode = 4'b1010; end // SUB 10
         end
-        else if (instruction[29] == 0) begin aluControlCode = 4'b0110; end // AND
-        else if (instruction[30] == 0) begin aluControlCode = 4'b0100; end // OR
-        else begin aluControlCode = 4'b1001; end //XOR
+        else if (instruction[29] == 0) begin aluControlCode = 4'b0110; end // AND 6
+        else if (instruction[30] == 0) begin aluControlCode = 4'b0100; end // OR 4
+        else begin aluControlCode = 4'b1001; end //XOR 9
       end
       else if (opType == `I_TYPE) begin
         if (instruction[29] == 1) begin aluControlCode = 4'b0100; end // ORI
         else if (instruction[30] == 1) begin // XORI or SUBI
-          if (instruction[25] == 1) begin aluControlCode = 4'b1001; end //XORI
-          else begin aluControlCode = 4'b1010; end
+          if (instruction[25] == 1) begin aluControlCode = 4'b1001; end //XORI 9
+          else begin aluControlCode = 4'b1010; end // SUBI 10
         end
-        else if (instruction[25] == 1) begin aluControlCode = 4'b0110; end // ANDI
-        else begin aluControlCode =  4'b0010; end // ADDI
+        else if (instruction[25] == 1) begin aluControlCode = 4'b0110; end // ANDI 6
+        else begin aluControlCode =  4'b0010; end // ADDI 2
       end
       else begin
         aluControlCode = 0; // Default
