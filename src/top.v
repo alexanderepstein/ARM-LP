@@ -1,65 +1,43 @@
+`ifdef DEBUG
+`include "./Processor.v"
+
+`ifndef TOP
+`define TOP
+
 module top;
 
-    wire [31:0] result;             //ALU result. output from ALU to data cache.
-    wire [3:0] aluControlCode;      //ALU control code
-    reg clock;                      //clock for entire processor
-    wire zeroFlag;                  //zero flag from ALU for use in PC
-    wire carryBit;                  //carrybit flag
+wire [31:0] instruction;
+wire regWriteFlag;
+wire [2:0] opType;
+reg [31:0] instructionVAL;
+reg [31:0] readData1VAL;
+wire memWriteFlag;
+wire memReadFlag;
+wire [3:0] aluControlCode;
+wire branchFlag;
+wire unconditionalBranchFlag;
+wire aluSRC;
 
-    wire memWriteFlag;              //flag from Decoder & Control for use in Data Cache
-    wire memReadFlag;               //flag from Decoder & Control for use in Data Cache
-    wire memToRegFlag;              //flag from Decoder & Control for use in Data Cache
-    wire [31:0] PC;                 //output from PC for use in instruction cache
-
-    wire [31:0] readData;           //doubles as write data for operand prep input
-                                    //read data output from data cache
-
-    wire [31:0] instruction;        //instruction value output from instruction cache
-    wire unconditionalBranchFlag;   //flag from Decoder & Control for use in PC
-    wire branchFlag;                //flag from Decoder & Control for use in PC
-    wire aluSRC;                    //flag from Decoder & Control for u1se in ALU
-    wire regWriteFlag;              //flag from Decoder & Control for use in PC
-    wire [4:0] readRegister1;       //register 1 ID from Decoder & Control to Operand Prep
-    wire [4:0] readRegister2;       //register 2 ID from Decoder & Control to Operand Prep
-    wire [4:0] writeRegister;       //write register ID from Decoder & Control to Operand Prep
-
-    wire [31:0] readData1;          //input to ALU from operand preperation
-    wire [31:0] readData2;          //input to ALU from operand preperation
-    wire [31:0] pcOffsetOrig;       //original PC counter. 
-    wire [31:0] pcOffsetFilled;     //Sign extended PC offset.
-
-    ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag,
-        clock, carryBit);
-    DataCache dataCacheInstance(memWriteFlag, memReadFlag, memToRegFlag, result,
-        readData2, readData, clock);
-    Controller controllerInstance(instruction, unconditionalBranchFlag,
-        branchFlag, memReadFlag, memToRegFlag, aluControlCode, memWriteFlag, aluSRC,
-        regWriteFlag, readRegister1, readRegister2, writeRegister, clock);
-    InstructionCache instructionCacheInstance(PC, instruction, clock);
-    OperationPrep operationPrepInstance(regWriteFlag, readRegister1, readRegister2,
-        writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
-        pcOffsetFilled, clock);
-    PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, PC,
-        pcOffsetFilled, clock);
-
-
-
-    initial begin
+assign instruction = instructionVAL;
+Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
+                      memReadFlag, aluControlCode, branchFlag, unconditionalBranchFlag, aluSRC);
+  initial begin
+        /* For testing the ALU
         $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
-        "\t result: ",result, "\t zeroFlag ", zeroFlag, "\t carryBit ", carryBit);
-    end
+        "\t result: ",result, "\t zeroFlag: ", zeroFlag, "\t carryBit: ", carryBit);*/
 
-    //This is a workaround to couple both inputs AND outputs from modules to a register.
-    reg [31:0] readData1VAL;
-    reg [31:0] readData2VAL;
-    reg [31:0] aluControlCodeVAL;
-    assign readData1 = readData1VAL;
-    assign readData2 = readData2VAL;
-    assign aluControlCode = aluControlCodeVAL;
+        $monitor("instruction: ", instruction,  "\t regWriteFlag: ",
+          regWriteFlag, "\t opType: ", opType, "\t memWriteFlag: ",
+          memWriteFlag, "\t memReadFlag: ", memReadFlag, "\t aluControlCode: ",
+          aluControlCode, "\t branchFlag: ", branchFlag, "\t uBranchFlag: ",
+          unconditionalBranchFlag, "\t aluSRC: ", aluSRC);
+  end
 
     //This is the test function all of the #number represents a timing delay
     initial begin
-        clock = 0;
+
+        /*
+        ALU Testing
         readData1VAL = 15; readData2VAL = 15; aluControlCodeVAL = 2;  //Test the add
         #2 aluControlCodeVAL = 7;                                     //Test the CBZ
         #2 readData1VAL = 10;                                         //change readData1VAL to 10
@@ -68,7 +46,7 @@ module top;
         #2 readData1VAL = 2140483647;
         #2 readData2VAL = 2141483647;
         #2 aluControlCodeVAL = 2;
-        
+
         #2 readData1VAL = 5;                                          //change readData1VAL to 5
         #2 aluControlCodeVAL = 6;                                     //Test the bitwise AND
         #2 aluControlCodeVAL = 4;                                     //Test the bitwise OR
@@ -77,7 +55,18 @@ module top;
         #2 aluControlCodeVAL = 5;                                     //Test the NOR
         #2 aluControlCodeVAL = 12;                                    //Test the NAND
         #2 aluControlCodeVAL = 13;                                    //Test the MOV
+        */
+        #2 instructionVAL = 2**22 | 2**28; // Load
+        #2 instructionVAL = 2**26 | 2**29; // Conditional Branch
+        #2 instructionVAL = 2**27; // RTYPE
+        #2 instructionVAL = 2**27 | 2**28; // Store
+        #2 instructionVAL = 2**28; // IType
+        #2 instructionVAL = 2**26; // BTYPE
+        #2 instructionVAL = 2**23 | 2**28; //MOV
+
     end
-    always
-        #1 clock = ~clock;
+
 endmodule
+
+`endif
+`endif
