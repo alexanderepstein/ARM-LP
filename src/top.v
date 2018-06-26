@@ -28,9 +28,9 @@ Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
 
         $monitor("instruction: ", instruction,  "\t regWriteFlag: ",
           regWriteFlag, "\t opType: ", opType, "\t memWriteFlag: ",
-          memWriteFlag, "\t memReadFlag: ", memReadFlag, "\t aluControlCode: ",
-          aluControlCode, "\t branchFlag: ", branchFlag, "\t uBranchFlag: ",
-          unconditionalBranchFlag, "\t aluSRC: ", aluSRC);
+          memWriteFlag, "\t memReadFlag: ", memReadFlag, "\naluControlCode: ",
+          aluControlCode, "\t branchFlag: ", branchFlag, "\t\t uBranchFlag: ",
+          unconditionalBranchFlag, "\t aluSRC: ", aluSRC, "\n\n");
   end
 
     //This is the test function all of the #number represents a timing delay
