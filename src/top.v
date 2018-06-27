@@ -56,13 +56,13 @@ Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
         #2 aluControlCodeVAL = 12;                                    //Test the NAND
         #2 aluControlCodeVAL = 13;                                    //Test the MOV
         */
-        #2 instructionVAL = 2**22 | 2**28; // Load
-        #2 instructionVAL = 2**26 | 2**29; // Conditional Branch
-        #2 instructionVAL = 2**27; // RTYPE
-        #2 instructionVAL = 2**27 | 2**28; // Store
-        #2 instructionVAL = 2**28; // IType
-        #2 instructionVAL = 2**26; // BTYPE
-        #2 instructionVAL = 2**23 | 2**28; //MOV
+        #2 instructionVAL <= 2**22 | 2**28; // Load
+        #2 instructionVAL <= 2**26 | 2**29; // Conditional Branch
+        #2 instructionVAL <= 2**27; // RTYPE
+        #2 instructionVAL <= 2**27 | 2**28; // Store
+        #2 instructionVAL <= 2**28; // IType
+        #2 instructionVAL <= 2**26; // BTYPE
+        #2 instructionVAL <= 2**23 | 2**28; //MOV
 
     end
 

@@ -23,8 +23,8 @@ module PC(branchFlag, unconditionalBranchFlag, zeroFlag,
     assign PC = internalPCReg; // If mux == 0 next instruction otherwise branch;
 
 	always @(posedge clock) begin
-		pcScaledOffset = pcOffsetFilled << 2; // Multiplying the offset by 4
-    internalPCReg = (muxSelect == 0) ? PC + 4 : PC + pcScaledOffset;
+		pcScaledOffset <= pcOffsetFilled << 2; // Multiplying the offset by 4
+    internalPCReg <= (muxSelect == 0) ? PC + 4 : PC + pcScaledOffset;
 	end
 	// Check that you can use the readAddress as an input and output (if i had to guess this is not a valid practice)
 endmodule
