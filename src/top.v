@@ -17,10 +17,15 @@ wire [3:0] aluControlCode;
 wire branchFlag;
 wire unconditionalBranchFlag;
 wire aluSRC;
+wire [4:0] readRegister1;
+wire [4:0] readRegister2;
+wire [4:0] writeRegister;
+wire memToReg;
 
 assign instruction = instructionVAL;
 Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
-                      memReadFlag, aluControlCode, branchFlag, unconditionalBranchFlag, aluSRC);
+                      memReadFlag, aluControlCode, branchFlag, unconditionalBranchFlag,
+                      aluSRC, readRegister1, readRegister2, writeRegister, memToReg);
   initial begin
         $dumpfile("wave.vcd");
         $dumpvars(0, top);
@@ -28,11 +33,11 @@ Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
         $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
         "\t result: ",result, "\t zeroFlag: ", zeroFlag, "\t carryBit: ", carryBit);*/
 
-        $monitor("instruction: ", instruction,  "\t regWriteFlag: ",
-          regWriteFlag, "\t opType: ", opType, "\t memWriteFlag: ",
-          memWriteFlag, "\t memReadFlag: ", memReadFlag, "\naluControlCode: ",
-          aluControlCode, "\t branchFlag: ", branchFlag, "\t\t uBranchFlag: ",
-          unconditionalBranchFlag, "\t aluSRC: ", aluSRC, "\n\n");
+        $monitor("\ninstruction: ", instruction,  "\t regWriteFlag: ",  regWriteFlag, "\t opType: ",
+          opType, "\t memWriteFlag: ", memWriteFlag, "\t memReadFlag: ", memReadFlag, "\naluControlCode: ",
+          aluControlCode, "\t branchFlag: ", branchFlag, "\t\t uBranchFlag: ", unconditionalBranchFlag,
+          "\t aluSRC: ", aluSRC, "\t\t readRegister1: ", readRegister1, "\nreadRegister2: ",
+          readRegister2, "\t writeRegister: ", writeRegister, "\t memToReg: ", memToReg, "\n");
   end
 
     //This is the test function all of the #number represents a timing delay
@@ -65,7 +70,8 @@ Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
         #2 instructionVAL <= 2**28; // IType
         #2 instructionVAL <= 2**26; // BTYPE
         #2 instructionVAL <= 2**23 | 2**28; //MOV
-
+        #2 instructionVAL <= 32'b10001011000101010000001010001001; // ADD X9,X20,X21
+        #2 instructionVAL <= 32'b10010001000000000000011011010110; // ADDI X22, X22, #1
     end
 
 endmodule

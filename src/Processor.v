@@ -10,7 +10,8 @@
 
 `ifdef DEBUG
   module Processor(instructionVAL, regWriteOUT, opTypeOUT, memWriteOUT, memReadOUT,
-     aluControlCodeOUT, branchFlagOUT, ubranchOUT, aluSRCOUT);
+     aluControlCodeOUT, branchFlagOUT, ubranchOUT, aluSRCOUT, readRegister1OUT,
+     readRegister2OUT, writeRegisterOUT, memToRegOUT);
   input [31:0] instructionVAL;
   input [31:0] readData1VAL;
   input [31:0] readData2VAL;
@@ -22,6 +23,11 @@
   output ubranchOUT;
   output [3:0] aluControlCodeOUT;
   output aluSRCOUT;
+  output [4:0] readRegister1OUT;
+  output [4:0] readRegister2OUT;
+  output [4:0] writeRegisterOUT;
+  output memToRegOUT;
+
 
   assign regWriteOUT = regWriteFlag;
   assign opTypeOUT = opType;
@@ -31,11 +37,15 @@
   assign ubranchOUT = unconditionalBranchFlag;
   assign aluControlCodeOUT = aluControlCode;
   assign aluSRCOUT = aluSRC;
+  assign readRegister1OUT = readRegister1;
+  assign readRegister2OUT = readRegister2;
+  assign memToRegOUT = memToRegFlag;
   //This is a workaround to couple both inputs AND outputs from modules to a registers
   reg [3:0] aluControlCodeVAL;
   assign instruction = instructionVAL;
   assign readData1 = readData1VAL;
   assign readData2 = readData2VAL;
+  assign writeRegisterOUT = writeRegister;
   //assign aluControlCode = aluControlCodeVAL;
 `else
   module Processor;
