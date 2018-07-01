@@ -22,6 +22,8 @@ assign instruction = instructionVAL;
 Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
                       memReadFlag, aluControlCode, branchFlag, unconditionalBranchFlag, aluSRC);
   initial begin
+        $dumpfile("wave.vcd");
+        $dumpvars(0, top);
         /* For testing the ALU
         $monitor("readData1: ", readData1, "\t readData2: ",readData2,"\t aluControlCode: ",aluControlCode,
         "\t result: ",result, "\t zeroFlag: ", zeroFlag, "\t carryBit: ", carryBit);*/
