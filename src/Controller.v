@@ -4,26 +4,26 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     aluControlCode, memWrite, aluSRC, regWriteFlag, readRegister1,
     readRegister2,  writeRegister, clock , opType) ;
 
-   `define LD_TYPE 0
-   `define CB_TYPE 1
-   `define R_TYPE  2
-   `define ST_TYPE 3
-   `define I_TYPE  4
-   `define B_TYPE  5
-   `define M_TYPE  6
+   `define LD_TYPE 0 // Load
+   `define CB_TYPE 1 // Conditional Branch
+   `define R_TYPE  2 // Register
+   `define ST_TYPE 3 // Store
+   `define I_TYPE  4 // Immediate
+   `define B_TYPE  5 // Branch
+   `define M_TYPE  6 // MOV type
 
 
     input clock;              //Main clock
     input [31:0] instruction; //instruction being input into the controller from instruction cache for parsing
 
     output wire unconditionalBranch; //Flag output from the controller into the pc
-    output wire branch;              //Flag output from the controller into the pc x
-    output wire memRead;             //Flag output from the controller for use in Data Cache x
-    output wire memToReg;            //Flag output from the controller for use in Data Cache x
+    output wire branch;              //Flag output from the controller into the pc
+    output wire memRead;             //Flag output from the controller for use in Data Cache
+    output wire memToReg;            //Flag output from the controller for use in Data Cache
     output reg [3:0] aluControlCode;//Output from the controller for use in ALU.
-    output wire memWrite;            //Flag output from the controller for use in Data Cache x
-    output wire aluSRC;              //Flag output from the controller for use in ALU x
-    output wire regWriteFlag;        //Flag output from the controller for use in Data Cache x
+    output wire memWrite;            //Flag output from the controller for use in Data Cache
+    output wire aluSRC;              //Flag output from the controller for use in ALU
+    output wire regWriteFlag;        //Flag output from the controller for use in Data Cache
 
     output reg [4:0] readRegister1;  //register 1 ID from Decoder & Control to Operand Prep
     output reg [4:0] readRegister2;  //register 2 ID from Decoder & Control to Operand Prep
@@ -38,7 +38,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     assign reg2Loc = opType == `CB_TYPE || opType == `ST_TYPE ? 1 : 0;
     assign aluSRC = opType == `R_TYPE || opType == `CB_TYPE ? 0 : 1;
     assign memToReg = opType == `LD_TYPE ? 1 : 0;
-    assign regWriteFlag = opType == `R_TYPE || opType == `LD_TYPE || opType == `M_TYPE ? 1 : 0;
+    assign regWriteFlag = opType == `R_TYPE || opType == `LD_TYPE || opType == `M_TYPE || opType == `I_TYPE ? 1 : 0;
     assign memRead = opType == `LD_TYPE ? 1 : 0;
     assign memWrite = opType == `ST_TYPE ? 1 : 0;
     assign branch = opType == `CB_TYPE ? 1 : 0;
