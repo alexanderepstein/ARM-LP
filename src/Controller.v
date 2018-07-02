@@ -31,7 +31,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
 
 
     wire reg2Loc; //reg2Loc field stays within this field and can thus be handled as a local variable.
-    output reg [2:0] opType;
+    output reg [2:0] opType; // type of operation (the operations are defined above)
     wire [1:0] aluOP; // Local feld that will help determine outout for aluControlCode
 
 
@@ -50,12 +50,6 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
 
     //assign aluControlCode = opType;
     always @* begin
-      // determine addresses for op-prep
-      readRegister1 <= instruction[9:5];
-      if (reg2Loc == 0) begin readRegister2 <= instruction[20:16]; end
-      else begin readRegister2 <= instruction[4:0]; end
-      writeRegister <= instruction[4:0];
-
       // Determine optype
       if (instruction[26] == 1) begin
         if (instruction[29] == 1) begin opType <= `CB_TYPE; end
@@ -67,6 +61,12 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
       else if (instruction[27] == 1) begin opType <= `ST_TYPE; end
       else begin opType <= `I_TYPE; end
 
+
+      // determine addresses for op-prep
+      readRegister1 <= instruction[9:5];
+      if (reg2Loc == 0) begin readRegister2 <= instruction[20:16]; end
+      else begin readRegister2 <= instruction[4:0]; end
+      writeRegister <= instruction[4:0];
 
       //Determine ALU Control Code
       if (opType == `LD_TYPE || opType == `ST_TYPE) begin aluControlCode <= 4'b0010; end // Add opcode for load and store 2
@@ -93,10 +93,6 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
       else begin
         aluControlCode <= 0; // Default
       end
-    end
-
-    always @(posedge clock) begin
-
     end
 
 endmodule
