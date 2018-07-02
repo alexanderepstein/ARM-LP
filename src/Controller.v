@@ -10,7 +10,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
    `define ST_TYPE 3 // Store
    `define I_TYPE  4 // Immediate
    `define B_TYPE  5 // Branch
-   `define M_TYPE  6 // MOV type
+   `define M_TYPE  6 // MOV (This is going to be treated as special Rtype, meaning you can move values from one register to another and thats it)
 
 
     input clock;              //Main clock
@@ -36,7 +36,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
 
 
     assign reg2Loc = opType == `CB_TYPE || opType == `ST_TYPE ? 1 : 0;
-    assign aluSRC = opType == `R_TYPE || opType == `CB_TYPE ? 0 : 1;
+    assign aluSRC = opType == `R_TYPE || opType == `CB_TYPE || opType == `M_TYPE ? 0 : 1;
     assign memToReg = opType == `LD_TYPE ? 1 : 0;
     assign regWriteFlag = opType == `R_TYPE || opType == `LD_TYPE || opType == `M_TYPE || opType == `I_TYPE ? 1 : 0;
     assign memRead = opType == `LD_TYPE ? 1 : 0;

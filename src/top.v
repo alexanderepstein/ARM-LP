@@ -42,9 +42,8 @@ Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
 
     //This is the test function all of the #number represents a timing delay
     initial begin
-
         /*
-        ALU Testing
+        // ALU Testing
         readData1VAL = 15; readData2VAL = 15; aluControlCodeVAL = 2;  //Test the add
         #2 aluControlCodeVAL = 7;                                     //Test the CBZ
         #2 readData1VAL = 10;                                         //change readData1VAL to 10
@@ -63,15 +62,25 @@ Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
         #2 aluControlCodeVAL = 12;                                    //Test the NAND
         #2 aluControlCodeVAL = 13;                                    //Test the MOV
         */
-        #2 instructionVAL <= 2**22 | 2**28; // Load
-        #2 instructionVAL <= 2**26 | 2**29; // Conditional Branch
-        #2 instructionVAL <= 2**27; // RTYPE
-        #2 instructionVAL <= 2**27 | 2**28; // Store
-        #2 instructionVAL <= 2**28; // IType
-        #2 instructionVAL <= 2**26; // BTYPE
-        #2 instructionVAL <= 2**23 | 2**28; //MOV
+
+        // Control Testing
+           instructionVAL <= 32'b11111000010011110000000101001001; // LDUR X9, [X10,#240]
+        #2 instructionVAL <= 32'b11111000000011110000000101001001; // STUR X9, [X10,#240]
         #2 instructionVAL <= 32'b10001011000101010000001010001001; // ADD X9,X20,X21
         #2 instructionVAL <= 32'b10010001000000000000011011010110; // ADDI X22, X22, #1
+        #2 instructionVAL <= 32'b11001011000101010000001010001001; // SUB X9,X20,X21
+        #2 instructionVAL <= 32'b11010001000000000000011011010110; // SUBI X22, X22, #1
+        #2 instructionVAL <= 32'b10001010000101010000001010001001; // AND X9,X20,X21
+        #2 instructionVAL <= 32'b10010010000000000000011011010110; // ANDI X22, X22, #1
+        #2 instructionVAL <= 32'b10101010000101010000001010001001; // ORR X9,X20,X21
+        #2 instructionVAL <= 32'b10110010000000000000011011010110; // ORI X22, X22, #1
+        #2 instructionVAL <= 32'b11101010000101010000001010001001; // XOR X9,X20,X21
+        #2 instructionVAL <= 32'b11010010000000000000011011010110; // XORI X22, X22, #1
+        #2 instructionVAL <= 32'b00010100000000000000000000000010; // B 2
+        #2 instructionVAL <= 32'b11010010100000000000000000000000; // MOV R0, R0
+        #2 instructionVAL <= 32'b10110100000000000000000000000000; // CBZ 0, 0, 0
+
+
     end
 
 endmodule
