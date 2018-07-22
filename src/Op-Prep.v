@@ -25,6 +25,16 @@ output reg [31:0] pcOffsetFilled; // PC padded with 0s to be 32 bits;
     // if (regWrite == 1) begin  Data at writeRegister = writeData; end
     //if (aluSRC == 0) begin readData2 = Data at reg2; end
     //else begin readData2 = instruction [16:0]; end or something like that
+        //Sign extending the PC
+        //see if opcode is a branch
+        if(pcOffsetOrig[31:26] == 6'b100101 || pcOffsetOrig == 6'000101) begin
+            pcOffsetFilled[31:0] <= { {6{pcOffsetOrig[25]}}, pcOffsetOrig[25:0] };
+        end
+        //conditional branch
+        else begin
+            pcOffsetFilled[31:0] <= { {13{pcOffsetOrig[18]}}, pcOffsetOrig[18:0] };
+        end
+        
     end
 
 endmodule

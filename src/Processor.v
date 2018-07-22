@@ -78,6 +78,7 @@ wire [31:0] readData1;          //input to ALU from operand preperation
 wire [31:0] readData2;          //input to ALU from operand preperation
 wire [31:0] pcOffsetOrig;       //original PC counter.
 wire [31:0] pcOffsetFilled;     //Sign extended PC offset.
+assign pcOffsetOrig = instruction; //Couple the instruction to the original PC. Op-Prep will do processing
 
 ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag,
     clock, carryBit);
