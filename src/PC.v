@@ -13,6 +13,7 @@ module PC(branchFlag, unconditionalBranchFlag, zeroFlag,
     inout [31:0] PC;
     reg [31:0] PC_in;
     reg [31:0] PC_out;
+    assign PC = (PC_out != 0)? PC_out : PC;
 
     reg [31:0] pcScaledOffset;
     reg [31:0] internalPCReg;
