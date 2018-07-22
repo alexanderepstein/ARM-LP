@@ -79,9 +79,15 @@ Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
         #2 instructionVAL <= 32'b00010100000000000000000000000010; // B 2
         #2 instructionVAL <= 32'b11010010100000000000000000000000; // MOV R0, R0
         #2 instructionVAL <= 32'b10110100000000000000000000000000; // CBZ 0, 0, 0
+        #2 instructionVAL = 32'hB4080000;                             //Here CBZ R1 Here
+        #2 instructionVAL = 32'h14000000;                              //Here B Here
+
+
 
 
     end
+    always
+        #1 clock = ~clock;
 
 endmodule
 
