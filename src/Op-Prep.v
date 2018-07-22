@@ -20,11 +20,16 @@ output wire [31:0] readData1; // Data from reg1
 output wire [31:0] readData2; // Data from reg2 or instruction
 output reg [31:0] pcOffsetFilled; // PC padded with 0s to be 32 bits;
 
+reg [31:0] register[4:0]; //These are the registers
+
 
 	always @(posedge clock) begin
-    // if (regWrite == 1) begin  Data at writeRegister = writeData; end
-    //if (aluSRC == 0) begin readData2 = Data at reg2; end
-    //else begin readData2 = instruction [16:0]; end or something like that
+        readData1 = register[reg1];
+        readData2 = register[reg2];
+        //verify that this does not have timing issues. I am reading the data 
+        //above first before any potential modification
+        if (regWrite == 1) begin  register[writeRegister] = writeData; end
+    
         //Sign extending the PC
         //see if opcode is a branch
         if(pcOffsetOrig[31:26] == 6'b100101 || pcOffsetOrig == 6'000101) begin
