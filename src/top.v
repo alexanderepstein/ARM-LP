@@ -64,23 +64,28 @@ Processor cpuInstance(instruction, regWriteFlag, opType, memWriteFlag,
         */
 
         // Control Testing
-           instructionVAL <= 32'b11111000010011110000000101001001; // LDUR X9, [X10,#240]
-        #2 instructionVAL <= 32'b11111000000011110000000101001001; // STUR X9, [X10,#240]
-        #2 instructionVAL <= 32'b10001011000101010000001010001001; // ADD X9,X20,X21
-        #2 instructionVAL <= 32'b10010001000000000000011011010110; // ADDI X22, X22, #1
-        #2 instructionVAL <= 32'b11001011000101010000001010001001; // SUB X9,X20,X21
-        #2 instructionVAL <= 32'b11010001000000000000011011010110; // SUBI X22, X22, #1
-        #2 instructionVAL <= 32'b10001010000101010000001010001001; // AND X9,X20,X21
-        #2 instructionVAL <= 32'b10010010000000000000011011010110; // ANDI X22, X22, #1
-        #2 instructionVAL <= 32'b10101010000101010000001010001001; // ORR X9,X20,X21
-        #2 instructionVAL <= 32'b10110010000000000000011011010110; // ORI X22, X22, #1
-        #2 instructionVAL <= 32'b11101010000101010000001010001001; // XOR X9,X20,X21
-        #2 instructionVAL <= 32'b11010010000000000000011011010110; // XORI X22, X22, #1
-        #2 instructionVAL <= 32'b00010100000000000000000000000010; // B 2
-        #2 instructionVAL <= 32'b11010010100000000000000000000000; // MOV R0, R0
-        #2 instructionVAL <= 32'b10110100000000000000000000000000; // CBZ 0, 0, 0
-        #2 instructionVAL = 32'hB4080000;                             //Here CBZ R1 Here
-        #2 instructionVAL = 32'h14000000;                              //Here B Here
+        //   instructionVAL <= 32'b11111000010011110000000101001001; // LDUR X9, [X10,#240]
+        //#2 instructionVAL <= 32'b11111000000011110000000101001001; // STUR X9, [X10,#240]
+        //#2 instructionVAL <= 32'b10001011000101010000001010001001; // ADD X9,X20,X21
+        //#2 instructionVAL <= 32'b10010001000000000000011011010110; // ADDI X22, X22, #1
+        //#2 instructionVAL <= 32'b11001011000101010000001010001001; // SUB X9,X20,X21
+        //#2 instructionVAL <= 32'b11010001000000000000011011010110; // SUBI X22, X22, #1
+        //#2 instructionVAL <= 32'b10001010000101010000001010001001; // AND X9,X20,X21
+        //#2 instructionVAL <= 32'b10010010000000000000011011010110; // ANDI X22, X22, #1
+        //#2 instructionVAL <= 32'b10101010000101010000001010001001; // ORR X9,X20,X21
+        //#2 instructionVAL <= 32'b10110010000000000000011011010110; // ORI X22, X22, #1
+        //#2 instructionVAL <= 32'b11101010000101010000001010001001; // XOR X9,X20,X21
+        //#2 instructionVAL <= 32'b11010010000000000000011011010110; // XORI X22, X22, #1
+        //#2 instructionVAL <= 32'b00010100000000000000000000000010; // B 2
+        //#2 instructionVAL <= 32'b11010010100000000000000000000000; // MOV R0, R0
+        //#2 instructionVAL <= 32'b10110100000000000000000000000000; // CBZ 0, 0, 0
+        //#2 instructionVAL = 32'hB4080000;                             //Here CBZ R1 Here
+        //#2 instructionVAL = 32'h14000000;                              //Here B Here
+
+        //#2 instructionVAL <= 32'b10010001000000000000011011010110; // ADDI X22, X22, #1
+        
+        //This should be driven by giving a PC value. Then, that goes into the instruction cache to fetch from.
+        //Need to add the test instructions into the instruction cache for this to work properly.
 
 
 
