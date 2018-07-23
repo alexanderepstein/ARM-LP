@@ -45,8 +45,8 @@ input [31:0] PC; // Address to read for instruction
         //I spit their address into their index here
         //FIX THIS DAVID AND FIND WAY TO WORD ALLIGN TO MAXIMIZE SPACE.
         //Probbably LSR 2. Update think the block address does this already
-		setAddress[256%16] = 29'h00000201; setData[256%16] = 32'h01010101;
-		setAddress[257%16] = 29'h00000202; setData[257%16] = 32'h02020202;
+		setAddress[256%16] = 29'h00000020; setData[256%16] = 32'b10010001000000000000011011010110; // ADDI X22, X22, #1; May God save us
+		setAddress[257%16] = 29'h00000202; setData[257%16] = 32'b11101010000101010000001010001001; // XOR X9,X20,X21
 		setAddress[258%16] = 29'h00000203; setData[258%16] = 32'h03030303;
    		setAddress[259%16] = 29'h00000204; setData[259%16] = 32'h04040404;
 		setAddress[260%16] = 29'h00000205; setData[260%16] = 32'h05050505;

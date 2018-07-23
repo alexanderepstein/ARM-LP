@@ -88,7 +88,7 @@ Controller controllerInstance(instruction, unconditionalBranchFlag,
     branchFlag, memReadFlag, memToRegFlag, aluControlCode, memWriteFlag, aluSRC,
     regWriteFlag, readRegister1, readRegister2, writeRegister, clock, opType);
 InstructionCache instructionCacheInstance(PC, instruction, clock);
-OperationPrep operationPrepInstance(regWriteFlag, readRegister1, readRegister2,
+OperationPrep operationPrepInstance(memWriteFlag, memReadFlag, regWriteFlag, readRegister1, readRegister2,
     writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
     pcOffsetFilled, clock);
 PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, PC,
