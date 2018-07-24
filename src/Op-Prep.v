@@ -2,7 +2,8 @@
 `define OP_PREP
 
 module OperationPrep(memWriteFlag, memReadFlag, regWrite, reg1, reg2,  writeRegister,
-   writeData,  readData1,  readData2, aluSRC, pcOffsetOrig, pcOffsetFilled, clock
+   writeData,  readData1,  readData2, aluSRC, pcOffsetOrig, pcOffsetFilled, 
+   writeDataToDCache, clock
 );
 
 input clock; // Main clock
@@ -20,6 +21,7 @@ input [31:0] pcOffsetOrig; // Original PC offset
 output reg [31:0] readData1; // Data from reg1
 output reg [31:0] readData2; // Data from reg2 or instruction
 output reg [31:0] pcOffsetFilled; // PC padded with 0s to be 32 bits;
+output reg [31:0] writeDataToDCache; //going to D Cache
 
 reg [31:0] register[31:0]; //These are the registers
 
@@ -68,6 +70,7 @@ reg [31:0] register[31:0]; //These are the registers
             else begin
                 readData2 = register[reg2];
             end
+            writeDataToDCache = register[reg2];
         end
         if (syncOpPrep == 5) begin
             syncOpPrep = 0;

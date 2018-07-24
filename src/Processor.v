@@ -76,6 +76,8 @@ wire [4:0] writeRegister;       //write register ID from Decoder & Control to Op
 
 wire [31:0] readData1;          //input to ALU from operand preperation
 wire [31:0] readData2;          //input to ALU from operand preperation
+wire [31:0] writeData;          //input to Datacache from op prep
+
 wire [31:0] pcOffsetOrig;       //original PC counter.
 wire [31:0] pcOffsetFilled;     //Sign extended PC offset.
 assign pcOffsetOrig = instruction; //Couple the instruction to the original PC. Op-Prep will do processing
@@ -83,14 +85,14 @@ assign pcOffsetOrig = instruction; //Couple the instruction to the original PC. 
 ALU aluInstance(readData1, readData2, aluControlCode, result, zeroFlag,
     clock, carryBit);
 DataCache dataCacheInstance(memWriteFlag, memReadFlag, memToRegFlag, result,
-    readData2, readData, clock);
+    writeData, readData, clock);
 Controller controllerInstance(instruction, unconditionalBranchFlag,
     branchFlag, memReadFlag, memToRegFlag, aluControlCode, memWriteFlag, aluSRC,
     regWriteFlag, readRegister1, readRegister2, writeRegister, clock, opType);
 InstructionCache instructionCacheInstance(PC, instruction, clock);
 OperationPrep operationPrepInstance(memWriteFlag, memReadFlag, regWriteFlag, readRegister1, readRegister2,
     writeRegister, readData, readData1, readData2, aluSRC, pcOffsetOrig,
-    pcOffsetFilled, clock);
+    pcOffsetFilled, writeData, clock);
 PC pcInstance(branchFlag, unconditionalBranchFlag, zeroFlag, PC,
     pcOffsetFilled, clock);
 
