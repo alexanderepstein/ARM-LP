@@ -32,7 +32,6 @@ module DataCache( memWrite,  memRead, memToReg, address,  writeData,  readData, 
             //Not accessing any of the cache
             if (memToReg==0) begin
                 readData = address;
-                disable search;
             end
             
             if(blockAddress == setAddress[setID]) begin
@@ -45,7 +44,7 @@ module DataCache( memWrite,  memRead, memToReg, address,  writeData,  readData, 
                     setData[setID] = writeData;
                     readData = setData[setID];
                 end //else
-                disable search;
+                //disable search;
             end
             //dont have anything. Put the shit in the right spot. Should not ever happen for this processor
             else begin
@@ -62,6 +61,12 @@ module DataCache( memWrite,  memRead, memToReg, address,  writeData,  readData, 
                     readData = setData[setID];
                 end
             
+            end
+            
+            //Shitty solution. Fix later
+            //Not accessing any of the cache
+            if (memToReg==0) begin
+                readData = address;
             end
         end
         else begin
