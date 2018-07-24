@@ -61,7 +61,9 @@ reg [31:0] register[31:0]; //These are the registers
                 if (memReadFlag || memWriteFlag) begin
                     readData2 = { {23{pcOffsetOrig[20]}}, pcOffsetOrig[20:12]};
                 end
-                readData2 = { {20{pcOffsetOrig[21]}}, pcOffsetOrig[21:10]};
+                else begin 
+                    readData2 = { {20{pcOffsetOrig[21]}}, pcOffsetOrig[21:10]};
+                end
             end
             else begin
                 readData2 = register[reg2];
