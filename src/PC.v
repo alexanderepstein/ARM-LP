@@ -33,7 +33,7 @@ module PC(branchFlag, unconditionalBranchFlag, zeroFlag,
     //assign PC = internalPCReg; // If mux == 0 next instruction otherwise branch;
 
 	always @(posedge clock) begin
-		pcScaledOffset <= pcOffsetFilled << 2; // Multiplying the offset by 4
+		pcScaledOffset <= pcOffsetFilled << 3; // Multiplying the offset by 4. UPDATE NOW 8 DUE TO HOW WE HAVE DONE THE CACHES INCREMENTING BY 8
         //Fuck you our processor now does 64 bit addressing. IF NOT WE NEED TO CHANGE CACHE TO DROP 2 BIT INSTEAD OF 3
         internalPCReg <= (muxSelect == 0) ? PC + 8 : PC + pcScaledOffset; 
         syncPC = syncPC + 1;

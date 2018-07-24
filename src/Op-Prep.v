@@ -55,7 +55,7 @@ reg [31:0] register[31:0]; //These are the registers
             end
             //conditional branch
             else begin
-                pcOffsetFilled[31:0] <= { {13{pcOffsetOrig[18]}}, pcOffsetOrig[18:0] };
+                pcOffsetFilled[31:0] <= { {18{pcOffsetOrig[18]}}, pcOffsetOrig[18:5] };
             end
             //determine if it should be an immediate or a reg.
             //D type is going to be wonky a bit
