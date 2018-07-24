@@ -78,7 +78,7 @@ module DataCache( memWrite,  memRead, memToReg, address,  writeData,  readData, 
         //I spit their address into their index here
         //FIX THIS DAVID AND FIND WAY TO WORD ALLIGN TO MAXIMIZE SPACE.
         //Probbably LSR 2. Update think the block address does this already
-		setAddress[256%16] = 29'h00000201; setData[256%16] = 32'h01010101;
+		setAddress[0] =      29'h000000A0; setData[0] = 32'b00000001000000010000000100000001;
 		setAddress[257%16] = 29'h00000202; setData[257%16] = 32'h02020202;
 		setAddress[258%16] = 29'h00000203; setData[258%16] = 32'h03030303;
    		setAddress[259%16] = 29'h00000204; setData[259%16] = 32'h04040404;

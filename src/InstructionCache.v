@@ -41,20 +41,25 @@ input [31:0] PC; // Address to read for instruction
 
     end
 
+    //TEST A NEGATIVE NUMBER YOU FUCK
 	initial begin
         //I spit their address into their index here
         //FIX THIS DAVID AND FIND WAY TO WORD ALLIGN TO MAXIMIZE SPACE.
         //Probbably LSR 2. Update think the block address does this already
-		setAddress[256%16] = 29'h00000020; setData[256%16] = 32'b10010001000000000000011011010110; // ADDI X22, X22, #1; May God save us
-   		setAddress[257%16] = 29'h00000021; setData[257%16] = 32'b10010001000000000010000011000110; // ADDI X6, X6, #8; May God save us
-   		setAddress[2] = 29'h00000022; setData[2] = 32'b10010001000000000010000011000110; // ADDI X6, X6, #8; May God save us
+        //These will ALL work
+		setAddress[0] = 29'h00000020; setData[0] = 32'b10010001000000000000011011010110; // ADDI X22, X22, #1; May God save us
+   		setAddress[1] = 29'h00000021; setData[1] = 32'b10010001000000000010000011000110; // ADDI X6, X6, #8; May God save us
+   		setAddress[2] = 29'h00000022; setData[2] = 32'b10010001000000000100000000100001; // ADDI X1, X1, #16; May God save us
+        setAddress[3] = 29'h00000023; setData[3] = 32'b10001011000000010000001011000001; // ADD X1,X22,X1 //Works
+        //All of the above function properly
+        setAddress[4] = 29'h00000024; setData[4] = 32'b10010001000101000000001111100010; //ADDI R2, R31, #1280 (0x500); //Works
+        setAddress[5] = 29'h00000025; setData[5] = 32'b11111000010000000000000001000011; //LDUR R3, [R2, #0] // Should load 0x101 0101
+ 
 
-
-		setAddress[258%16] = 29'h00000202; setData[258%16] = 32'b11101010000101010000001010001001; // XOR X9,X20,X21
+		//setAddress[258%16] = 29'h00000202; setData[258%16] = 32'b11101010000101010000001010001001; // XOR X9,X20,X21
 		
-   		setAddress[259%16] = 29'h00000204; setData[259%16] = 32'h04040404;
-		setAddress[260%16] = 29'h00000205; setData[260%16] = 32'h05050505;
-		setAddress[261%16] = 29'h00000206; setData[261%16] = 32'h06060606;
+		//setAddress[260%16] = 29'h00000205; setData[260%16] = 32'h05050505;
+		//setAddress[261%16] = 29'h00000206; setData[261%16] = 32'h06060606;
 		setAddress[262%16] = 29'h00000207; setData[262%16] = 32'h07070707;
 		setAddress[263%16] = 29'h00000208; setData[263%16] = 32'h08080808;
 		setAddress[264%16] = 29'h00000209; setData[264%16] = 32'h09090909;
