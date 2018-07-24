@@ -52,10 +52,19 @@ input [31:0] PC; // Address to read for instruction
    		setAddress[2] = 29'h00000022; setData[2] = 32'b10010001000000000100000000100001; // ADDI X1, X1, #16; May God save us
         setAddress[3] = 29'h00000023; setData[3] = 32'b10001011000000010000001011000001; // ADD X1,X22,X1 //Works
         //All of the above function properly
-        setAddress[4] = 29'h00000024; setData[4] = 32'b10010001000101000000001111100010; //ADDI R2, R31, #1280 (0x500); //Works
-        setAddress[5] = 29'h00000025; setData[5] = 32'b11111000010000000000000001000011; //LDUR R3, [R2, #0] // Should load 0x101 0101
-        setAddress[6] = 29'h00000026; setData[6] = 32'b11111000010000010000000001000100; //LDUR R4, [R2, #16]
-//32'b1111 1000 010 000010000 00   00010     00100; //LDUR R4, [R2, #16]
+        setAddress[4] = 29'h00000024; setData[4] = 32'b10010001000000000001001111100000; // ADDI R0, RZR, #4 //works
+        
+        setAddress[5] = 29'h00000025; setData[5] = 32'b10010001000101000000001111100010; //ADDI R2, R31, #1280 (0x500); //Works
+        setAddress[6] = 29'h00000026; setData[6] = 32'b11111000010000000000000001000011; //LDUR R3, [R2, #0] // Should load 0x101 0101 //Works
+        setAddress[7] = 29'h00000027; setData[7] = 32'b11111000010000010000000001000100; //LDUR R4, [R2, #16]//works
+        setAddress[8] = 29'h00000028; setData[8] = 32'b10001011000001000000000001100101; //ADD R5, R3, R4 //89ns works
+        setAddress[9] = 29'h00000029; setData[9] = 32'b11111000000000000000000001000101; //STUR R5, [R2,#0] //91ns begin. Works 97ns
+        setAddress[10] = 29'h0000002A; setData[10] = 32'b10010001000000000010000001000010;  //ADDI R2, R2, #8 //works 109ns
+        setAddress[11] = 29'h0000002B; setData[11] = 32'b11010001000000000000010000000000; //SUBI R0, R0, #1 /works 109ns
+        setAddress[12] = 29'h0000002C; setData[12] = 32'b10110101111111111111111101000000; //CBNZ R0, Loop
+        setAddress[13] = 29'h0000002D; setData[12] = 32'b11001011000001100000000011000110; //SUB R6, R6, R6
+
+
 
 
 		//setAddress[258%16] = 29'h00000202; setData[258%16] = 32'b11101010000101010000001010001001; // XOR X9,X20,X21
@@ -64,13 +73,8 @@ input [31:0] PC; // Address to read for instruction
 		//setAddress[261%16] = 29'h00000206; setData[261%16] = 32'h06060606;
 		//setAddress[262%16] = 29'h00000207; setData[262%16] = 32'h07070707;
 		//setAddress[263%16] = 29'h00000208; setData[263%16] = 32'h08080808;
-		setAddress[264%16] = 29'h00000209; setData[264%16] = 32'h09090909;
-        setAddress[265%16] = 29'h0000020a; setData[265%16] = 32'hDEADBEEF;
-        setAddress[266%16] = 29'h0000020b; setData[266%16] = 32'hFADECAFE;
-        setAddress[267%16] = 29'h0000020c; setData[267%16] = 32'hBA5EBA11;
-        setAddress[268%16] = 29'h0000020d; setData[268%16] = 32'hC0DEBABE;
-        setAddress[269%16] = 29'h0000020e; setData[269%16] = 32'hFEEDFACE;
-		setAddress[270%16] = 29'h0000020f; setData[270%16] = 32'h000FADED;
+		//setAddress[264%16] = 29'h00000209; setData[264%16] = 32'h09090909;
+
         
 	end
 
