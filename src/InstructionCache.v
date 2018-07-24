@@ -54,14 +54,16 @@ input [31:0] PC; // Address to read for instruction
         //All of the above function properly
         setAddress[4] = 29'h00000024; setData[4] = 32'b10010001000101000000001111100010; //ADDI R2, R31, #1280 (0x500); //Works
         setAddress[5] = 29'h00000025; setData[5] = 32'b11111000010000000000000001000011; //LDUR R3, [R2, #0] // Should load 0x101 0101
- 
+        setAddress[6] = 29'h00000026; setData[6] = 32'b11111000010000010000000001000100; //LDUR R4, [R2, #16]
+//32'b1111 1000 010 000010000 00   00010     00100; //LDUR R4, [R2, #16]
+
 
 		//setAddress[258%16] = 29'h00000202; setData[258%16] = 32'b11101010000101010000001010001001; // XOR X9,X20,X21
 		
 		//setAddress[260%16] = 29'h00000205; setData[260%16] = 32'h05050505;
 		//setAddress[261%16] = 29'h00000206; setData[261%16] = 32'h06060606;
-		setAddress[262%16] = 29'h00000207; setData[262%16] = 32'h07070707;
-		setAddress[263%16] = 29'h00000208; setData[263%16] = 32'h08080808;
+		//setAddress[262%16] = 29'h00000207; setData[262%16] = 32'h07070707;
+		//setAddress[263%16] = 29'h00000208; setData[263%16] = 32'h08080808;
 		setAddress[264%16] = 29'h00000209; setData[264%16] = 32'h09090909;
         setAddress[265%16] = 29'h0000020a; setData[265%16] = 32'hDEADBEEF;
         setAddress[266%16] = 29'h0000020b; setData[266%16] = 32'hFADECAFE;
