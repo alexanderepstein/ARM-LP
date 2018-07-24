@@ -14,19 +14,29 @@ module ALU (inOne, inTwo, opcode,result, zeroFlag, clock, carryBit);
  output reg carryBit;
  assign zeroFlag = inTwo == 0 ? 1 : 0; // Flag is set if inTwo is a 0
 
+ reg [3:0] syncALU;
+ initial begin syncALU = 0; end
+ 
  always @(posedge clock) begin
-		case(opcode)
-			4'b0010: {carryBit,result} = inOne + inTwo;    //LD_STR_ADD opcode
-			4'b0111: result = inTwo;       //CBZ opcode
-			4'b1010: {carryBit,result} = inOne - inTwo;    //SUB opcode
-			4'b0110: result = inOne & inTwo;    //bitwise AND opcode
-			4'b0100: result = inOne | inTwo;    //bitwise OR opcode
-			4'b1001: result = inOne ^ inTwo;    //bitwise XOR opcode
-			4'b0101: result = ! (inOne | inTwo);//NOR opcode
-			4'b1100: result = ! (inOne & inTwo);//NAND opcode
-			4'b1101: result = inOne;            //MOV opcode
-			default: result = 0;                //undefined opcode
-		endcase
+        syncALU = syncALU + 1;
+        
+        if (syncALU == 3) begin
+            case(opcode)
+                4'b0010: {carryBit,result} = inOne + inTwo;    //LD_STR_ADD opcode
+                4'b0111: result = inTwo;       //CBZ opcode
+                4'b1010: {carryBit,result} = inOne - inTwo;    //SUB opcode
+                4'b0110: result = inOne & inTwo;    //bitwise AND opcode
+                4'b0100: result = inOne | inTwo;    //bitwise OR opcode
+                4'b1001: result = inOne ^ inTwo;    //bitwise XOR opcode
+                4'b0101: result = ! (inOne | inTwo);//NOR opcode
+                4'b1100: result = ! (inOne & inTwo);//NAND opcode
+                4'b1101: result = inOne;            //MOV opcode
+                default: result = 0;                //undefined opcode
+            endcase
+        end
+        else if (syncALU==5) begin
+            syncALU = 0;
+        end
 	end
 endmodule
 
