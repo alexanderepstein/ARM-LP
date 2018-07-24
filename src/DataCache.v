@@ -78,21 +78,25 @@ module DataCache( memWrite,  memRead, memToReg, address,  writeData,  readData, 
         //I spit their address into their index here
         //FIX THIS DAVID AND FIND WAY TO WORD ALLIGN TO MAXIMIZE SPACE.
         //Probbably LSR 2. Update think the block address does this already
-		setAddress[0] =      29'h000000A0; setData[0] = 32'b00000001000000010000000100000001;
-		setAddress[257%16] = 29'h00000202; setData[257%16] = 32'h02020202;
-		setAddress[258%16] = 29'h00000203; setData[258%16] = 32'h03030303;
-   		setAddress[259%16] = 29'h00000204; setData[259%16] = 32'h04040404;
-		setAddress[260%16] = 29'h00000205; setData[260%16] = 32'h05050505;
-		setAddress[261%16] = 29'h00000206; setData[261%16] = 32'h06060606;
-		setAddress[262%16] = 29'h00000207; setData[262%16] = 32'h07070707;
-		setAddress[263%16] = 29'h00000208; setData[263%16] = 32'h08080808;
-		setAddress[264%16] = 29'h00000209; setData[264%16] = 32'h09090909;
-        setAddress[265%16] = 29'h0000020a; setData[265%16] = 32'hDEADBEEF;
-        setAddress[266%16] = 29'h0000020b; setData[266%16] = 32'hFADECAFE;
-        setAddress[267%16] = 29'h0000020c; setData[267%16] = 32'hBA5EBA11;
-        setAddress[268%16] = 29'h0000020d; setData[268%16] = 32'hC0DEBABE;
-        setAddress[269%16] = 29'h0000020e; setData[269%16] = 32'hFEEDFACE;
-		setAddress[270%16] = 29'h0000020f; setData[270%16] = 32'h000FADED;
+		setAddress[0] = 29'h000000A0; setData[0] = 32'b00000001000000010000000100000001;
+		setAddress[1] = 29'h000000A1; setData[1] = 32'b00000010000000100000001000000010;
+        setAddress[2] = 29'h000000A2; setData[2] = 32'b00000011000000110000001100000011;
+        setAddress[3] = 29'h000000A3; setData[3] = 32'b00000100000001000000010000000100;
+        setAddress[4] = 29'h000000A4; setData[4] = 32'b00000101000001010000010100000101;
+        setAddress[5] = 29'h000000A5; setData[5] = 32'b00000110000001100000011000000110;
+        setAddress[6] = 29'h000000A6; setData[6] = 32'b00000111000001110000011100000111;
+        setAddress[7] = 29'h000000A7; setData[7] = 32'b00001000000010000000100000001000;
+        setAddress[8] = 29'h000000A8; setData[8] = 32'b00001001000010010000100100001001;
+        setAddress[9] = 29'h000000A9; setData[9] = 32'h00000000;
+        setAddress[10] = 29'h000000AA; setData[10] = 32'h00000000;
+        setAddress[11] = 29'h000000AB; setData[11] = 32'h00000000;
+        setAddress[12] = 29'h000000AC; setData[12] = 32'h00000000;
+        setAddress[13] = 29'h000000AD; setData[13] = 32'h00000000;
+        setAddress[14] = 29'h000000AE; setData[14] = 32'h00000000;
+        setAddress[15] = 29'h000000AF; setData[15] = 32'h00000000;
+        
+        
+        
         
 	end
 
