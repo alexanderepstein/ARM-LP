@@ -50,7 +50,7 @@ reg [31:0] register[31:0]; //These are the registers
         
             //Sign extending the PC
             //see if opcode is a branch
-            if(pcOffsetOrig[31:26] == 6'b100101 || pcOffsetOrig == 6'b000101) begin
+            if(pcOffsetOrig[31:26] == 6'b100101 || pcOffsetOrig[31:26] == 6'b000101) begin
                 pcOffsetFilled[31:0] <= { {6{pcOffsetOrig[25]}}, pcOffsetOrig[25:0] };
             end
             //conditional branch
