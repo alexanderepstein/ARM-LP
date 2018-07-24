@@ -23,37 +23,52 @@ output reg [31:0] pcOffsetFilled; // PC padded with 0s to be 32 bits;
 
 reg [31:0] register[31:0]; //These are the registers
 
+ reg [3:0] syncOpPrep;
+ initial begin syncOpPrep = 0; end
+ 
 //This screams timing conflict
 //assign readData1 = register[reg1];
 //assign readData2 = register[reg1];
 
 	always @(posedge clock) begin
-        //I would rather do it this way as it avoid timing conflicts
-        readData1 <= register[reg1];
+        syncOpPrep = syncOpPrep + 1;
         
-        //verify that this does not have timing issues. I am reading the data 
-        //above first before any potential modification
-        if (regWrite == 1) begin  register[writeRegister] = writeData; end
-    
-        //Sign extending the PC
-        //see if opcode is a branch
-        if(pcOffsetOrig[31:26] == 6'b100101 || pcOffsetOrig == 6'b000101) begin
-            pcOffsetFilled[31:0] <= { {6{pcOffsetOrig[25]}}, pcOffsetOrig[25:0] };
-        end
-        //conditional branch
-        else begin
-            pcOffsetFilled[31:0] <= { {13{pcOffsetOrig[18]}}, pcOffsetOrig[18:0] };
-        end
-        //determine if it should be an immediate or a reg.
-        //D type is going to be wonky a bit
-        if (aluSRC) begin
-            if (memReadFlag || memWriteFlag) begin
-                readData2 = { {23{pcOffsetOrig[20]}}, pcOffsetOrig[20:12]};
+        if (syncOpPrep == 2 || syncOpPrep == 5 || syncOpPrep == 4 || syncOpPrep == 0 || syncOpPrep == 3) begin
+            //I would rather do it this way as it avoid timing conflicts
+            readData1 = register[reg1];
+            
+            //verify that this does not have timing issues. I am reading the data 
+            //above first before any potential modification
+            if (regWrite == 1) begin
+                if (writeData !== 32'bzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz) begin
+                    register[writeRegister] = writeData;
+                end
+                //otherwise we are not ready to writeback and do not want intermediate values
             end
-            readData2 = { {20{pcOffsetOrig[21]}}, pcOffsetOrig[21:10]};
+        
+            //Sign extending the PC
+            //see if opcode is a branch
+            if(pcOffsetOrig[31:26] == 6'b100101 || pcOffsetOrig == 6'b000101) begin
+                pcOffsetFilled[31:0] <= { {6{pcOffsetOrig[25]}}, pcOffsetOrig[25:0] };
+            end
+            //conditional branch
+            else begin
+                pcOffsetFilled[31:0] <= { {13{pcOffsetOrig[18]}}, pcOffsetOrig[18:0] };
+            end
+            //determine if it should be an immediate or a reg.
+            //D type is going to be wonky a bit
+            if (aluSRC) begin
+                if (memReadFlag || memWriteFlag) begin
+                    readData2 = { {23{pcOffsetOrig[20]}}, pcOffsetOrig[20:12]};
+                end
+                readData2 = { {20{pcOffsetOrig[21]}}, pcOffsetOrig[21:10]};
+            end
+            else begin
+                readData2 = register[reg2];
+            end
         end
-        else begin
-            readData2 = register[reg2];
+        if (syncOpPrep == 5) begin
+            syncOpPrep = 0;
         end
         
 

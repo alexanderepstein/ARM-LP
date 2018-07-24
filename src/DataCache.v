@@ -20,42 +20,55 @@ module DataCache( memWrite,  memRead, memToReg, address,  writeData,  readData, 
 	wire [3:0] setID = blockAddress % 16; // I have 16 sets
     assign setID = blockAddress % 16;
 
-
+    //You are a 4th stage and ONLY a 4th stage
+    reg [3:0] syncData;
+    initial begin syncData = 0; end
+ 
 
 	always @(posedge clock) begin : search
-        //Not accessing any of the cache
-        if (memToReg==0) begin
-            readData = address;
-            disable search;
-        end
+        syncData = syncData + 1;
+        if (syncData == 4) begin
         
-        if(blockAddress == setAddress[setID]) begin
-            //if we are reading return the data that is there
-            if(memRead) begin
-                readData = setData[setID];
-            end //if
-            //we are writing and want to update what was there
-            else if(memWrite) begin
-                setData[setID] = writeData;
-                readData = setData[setID];
-            end //else
-            disable search;
+            //Not accessing any of the cache
+            if (memToReg==0) begin
+                readData = address;
+                disable search;
+            end
+            
+            if(blockAddress == setAddress[setID]) begin
+                //if we are reading return the data that is there
+                if(memRead) begin
+                    readData = setData[setID];
+                end //if
+                //we are writing and want to update what was there
+                else if(memWrite) begin
+                    setData[setID] = writeData;
+                    readData = setData[setID];
+                end //else
+                disable search;
+            end
+            //dont have anything. Put the shit in the right spot. Should not ever happen for this processor
+            else begin
+                if(memRead) begin
+                    setAddress[setID] = blockAddress;
+                    //We would fetch the data up but we don't know what is there since 1 level
+                    //fill with the special sauce
+                    setData[setID] = 32'hDEAD_BEEF;
+                    readData = 32'hDEAD_BEEF;
+                end
+                else if (memWrite) begin
+                    setAddress[setID] = blockAddress;
+                    setData[setID] = writeData;
+                    readData = setData[setID];
+                end
+            
+            end
         end
-        //dont have anything. Put the shit in the right spot. Should not ever happen for this processor
         else begin
-            if(memRead) begin
-                setAddress[setID] = blockAddress;
-                //We would fetch the data up but we don't know what is there since 1 level
-                //fill with the special sauce
-                setData[setID] = 32'hDEAD_BEEF;
-                readData = 32'hDEAD_BEEF;
-            end
-            else if (memWrite) begin
-                setAddress[setID] = blockAddress;
-                setData[setID] = writeData;
-                readData = setData[setID];
-            end
-           
+            readData =32'bzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz;
+        end
+        if (syncData == 5) begin
+            syncData = 0;
         end
        
 
