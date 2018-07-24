@@ -10,3 +10,4 @@ src/work/_vmake
 work/_vmake
 *.wlf
 work/_info
+*.vstf

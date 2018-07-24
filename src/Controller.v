@@ -2,7 +2,7 @@
 `define CONTROLLER
 module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     aluControlCode, memWrite, aluSRC, regWriteFlag, readRegister1,
-    readRegister2,  writeRegister, clock , opType) ;
+    readRegister2,  writeRegister, clock , invertZeroFlag, opType) ;
 
    `define LD_TYPE 0 // Load
    `define CB_TYPE 1 // Conditional Branch
@@ -24,6 +24,7 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     output wire memWrite;            //Flag output from the controller for use in Data Cache
     output wire aluSRC;              //Flag output from the controller for use in ALU
     output wire regWriteFlag;        //Flag output from the controller for use in Data Cache
+    output wire invertZeroFlag;
 
     output reg [4:0] readRegister1;  //register 1 ID from Decoder & Control to Operand Prep
     output reg [4:0] readRegister2;  //register 2 ID from Decoder & Control to Operand Prep
@@ -47,6 +48,9 @@ module Controller(instruction, unconditionalBranch, branch, memRead, memToReg,
     assign aluOP = opType == `R_TYPE  ? 2 :
                    opType == `CB_TYPE ? 1 :
                    0;
+    assign invertZeroFlag = opType == `CB_TYPE ? instruction[24] == 1 
+                                                ? 1 :0
+                                                :0;
 
     //assign aluControlCode = opType;
     always @* begin
