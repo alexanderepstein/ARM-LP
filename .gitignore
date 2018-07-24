@@ -1,2 +1,13 @@
 *.bak
 *.out
+*.vcd*
+src/work/_info
+*.qdb
+src/work/_lib1_3.qtl
+*.qpg
+src/work/_vmake
+*.qtl
+work/_vmake
+*.wlf
+work/_info
+*.vstf

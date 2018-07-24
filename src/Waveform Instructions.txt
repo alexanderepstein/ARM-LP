@@ -1,0 +1,7 @@
+Wave.do is a TCL script.
+Thus, for it to run properly you must set your working path to where to .do file is.
+Then compile. Begin simulation.
+
+Go to command line and run TCL script
+do wave.do
+Should load all of the tracked variables
