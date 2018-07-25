@@ -34,8 +34,8 @@ reg [31:0] register[31:0]; //These are the registers
 
 	always @(posedge clock) begin
         syncOpPrep = syncOpPrep + 1;
-        
-        if (syncOpPrep == 2 || syncOpPrep == 5 || syncOpPrep == 4 || syncOpPrep == 0 || syncOpPrep == 3) begin
+        //zero is for redundancy. SHOULD be 5 at this point
+        if (syncOpPrep == 2 || syncOpPrep == 5 || syncOpPrep == 4 || syncOpPrep == 0) begin
             //I would rather do it this way as it avoid timing conflicts
             readData1 = register[reg1];
             
@@ -86,7 +86,9 @@ reg [31:0] register[31:0]; //These are the registers
 		register[0] <= 0;
         register[1] <= 0;
         register[2] <= 0;
-        register[3] <= 0;
+        //register[3] <= 0;
+        //Trying to not branch in Carpenters test.
+        register[3] <= 1;
         register[4] <= 0;
         register[5] <= 0;
         register[6] <= 0;
@@ -103,12 +105,16 @@ reg [31:0] register[31:0]; //These are the registers
         register[17] <= 0;
         register[18] <= 0;
         register[19] <= 0;
-        register[20] <= 0;
+        //register[20] <= 0;
+        //Carpenter test below
+        register[20] <= 1280;
         register[21] <= 0;
         register[22] <= 0;
         register[23] <= 0;
         register[24] <= 0;
-        register[25] <= 0;
+        //register[25] <= 0;
+        //Carpenter test below
+        register[25] = 24;
         register[26] <= 0;
         register[27] <= 0;
         register[28] <= 0;
